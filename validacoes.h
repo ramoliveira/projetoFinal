@@ -1,4 +1,4 @@
-/*Arquivo de Cabeçalho - Funções*/
+/*Arquivo de CabeÃ§alho - FunÃ§Ãµes*/
 #ifndef _VALIDACOES_h
 #define _VALIDACOES_h
 
@@ -8,18 +8,15 @@
 #include <string.h>
 #include <conio.h>
 
-/*MACROS*/
-#define TAM_NOME 50
-
-/*VALIDAÇÕES*/
+/*VALIDAÃ‡Ã•ES*/
 void leValidaFloat(float *pValor, float valorMin, float valorMax, char texto[30]);
 void leValidaNome(char *nome, int tamString, char texto[]);
 void leValidaChar(char *pChar, char X, char Y, char titulo[30]);
 void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]);
 void formataNome(char *nome);
 
-//Objetivo: lê e validar valores reais
-//Parâmetros:  ponteiro de valores mínimos e máximos
+//Objetivo: lÃª e validar valores reais
+//ParÃ¢metros:  ponteiro de valores mÃ­nimos e mÃ¡ximos
 //Retorno: nenhum
 
 void leValidaFloat(float *pValor, float valorMin, float valorMax, char texto[30]){
@@ -55,65 +52,45 @@ void leValidaFloat(float *pValor, float valorMin, float valorMax, char texto[30]
 	}while(flag==1);
 }
 
-///Objetivo: lê e validar nomes
-//Parâmetros:  ponteiro de nome e texto
+///Objetivo: lÃª e validar nomes
+//ParÃ¢metros:  ponteiro de nome e texto
 //Retorno: nenhum
 
-void leValidaNome(char *nome, int tamString, char texto[]){
+void leValidaNome(char texto[], char *nome) {
+	int flag = 1, qtdEspacos = 0, i;
 	
-	int flag=0,i=0;
-	int qtdEspacos=0;
-	
-	do{	
-		do{
-			do{
-				fflush(stdin);
-				printf(texto);
-				scanf("%[^\n]s", nome);
-				
-				if(nome[0] == ' '){
-					printf("Nome Invalido\nDigite Novamente\n");
-					getch();
-					system("cls");
-					flag=1;
-				}else{
-					flag=0;
-				}
-			}while(flag==1);
-			
-			if(strlen(nome)>tamString || strlen(nome)<2){
-				printf("Nome Invalido\nDigite Novamente\n");
-				getch();
-				system("cls");
-				flag=1;
-			}else{
-				flag=0;
-			}
-		}while(flag==1);
-		
-		for(i=0;i<strlen(nome);i++){
-			if(!isalpha(*(nome+i))){
-				if((*(nome+i)) == ' '){
-					i++;
-				}else{
-					printf("Nome Invalido\nDigite Novamente\n");
-					getch();
-					system("cls");
-					flag=1;
+	do {
+		qtdEspacos = 0;
+		printf(mensagem);
+		fflush(stdin);
+		scanf("%[^\n]s", nome);
+		for (i = 0; i < strlen(nome); i++) {
+			if (nome[i] == ' ' || nome[i] == '\0' || nome[i] == '\n') {
+				qtdEspacos++;
+			} 
+		}
+		if (qtdEspacos == strlen(nome)) {
+			printf("Nome invalido! O nome esta vazio.\n");
+			flag = 0;
+		} else {
+			for (i = 0; i < strlen(nome); i++) {
+				if (isdigit(nome[i]) != 0) {
+					printf("Nome invalido! Digite apenas letras.\n");
+					flag = 0;
 					break;
-				}	
-			}else{
-				flag=0;
+				} else {
+					flag = 1;
+				}
 			}
 		}
-	}while(flag==1);
+	} while(!flag);
 	
 	formataNome(nome);
 }
 
 
-//Objetivo: lê e validar caracteres
-//Parâmetros: ponteiro de char, dois caracteres válidos e título
+//Objetivo: lÃª e validar caracteres
+//ParÃ¢metros: ponteiro de char, dois caracteres vÃ¡lidos e tÃ­tulo
 //Retorno: nenhum
 
 void leValidaChar(char *pChar, char X, char Y, char titulo[30]){
@@ -130,7 +107,7 @@ void leValidaChar(char *pChar, char X, char Y, char titulo[30]){
 		
 		if(*pChar != X && *pChar != Y){
 			system("cls");
-			printf("Opçao Invalida! Digite Novamente!\n");getch();system("cls");
+			printf("OpÃ§ao Invalida! Digite Novamente!\n");getch();system("cls");
 		}else{
 			flag=1;
 		}		
@@ -138,8 +115,8 @@ void leValidaChar(char *pChar, char X, char Y, char titulo[30]){
 				
 }
 
-//Objetivo: lê e validar inteiros
-//Parâmetros: ponteiro de inteiro,valor mínimo, valor máximo e texto
+//Objetivo: lÃª e validar inteiros
+//ParÃ¢metros: ponteiro de inteiro,valor mÃ­nimo, valor mÃ¡ximo e texto
 //Retorno: nenhum
 
 void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]){
@@ -179,7 +156,7 @@ void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]){
 }
 
 //Objetivo: formatar nome 
-//Parâmetros: ponteiro de nome
+//ParÃ¢metros: ponteiro de nome
 //Retorno: nenhum
 
 void formataNome(char *nome){
