@@ -10,7 +10,7 @@
 
 /*VALIDAÇÕES*/
 void leValidaFloat(float *pValor, float valorMin, float valorMax, char texto[30]);
-void leValidaNome(char *nome, int tamString, char texto[]);
+void leValidaNome(char texto[], char *nome);
 void leValidaChar(char *pChar, char X, char Y, char titulo[30]);
 void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]);
 void formataNome(char *nome);
