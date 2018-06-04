@@ -4,6 +4,7 @@
 int main() {
 	printf("Ola mundo!");	
 	printf("Projeto Final\n");
+	printf("Deu certo\n");
 
 	return 0;
 }
