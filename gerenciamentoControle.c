@@ -1,124 +1,108 @@
-/*Gerenciamento e controle dos dados cadastrais - Tópico 2.1*/
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-
-int main() {
-	
-	
-	return 0;
-}
+/*Gerenciamento e controle dos dados cadastrais - TÃ³pico 2.1*/
 
 /******PILOTOS*******/
-
 /*Objetivo: incluir um piloto 
-Parâmetros: ponteiro da estrutura piloto e ponteiro da quantidade de pilotos
+ParÃ¢metros: ponteiro da estrutura piloto e ponteiro da quantidade de pilotos
 Retorno: nenhum */
 
 void inclusaoPilotos(struct Piloto *dadosPilotos, int *qtdPilotos){
 	
-	/*Fazer a chamada da função de cadastramento de pilotos*/
-	/*Utilizar pesquisa binária para identificar repetição de código de piloto*/
-		
+	/*Fazer a chamada da funÃ§Ã£o de cadastramento de pilotos*/
+	/*Utilizar pesquisa binÃ¡ria para identificar repetiÃ§Ã£o de cÃ³digo de piloto*/	
 }
 
-/*Objetivo: alterar um piloto que usuário desejar
-Parâmetros: ponteiro da estrutura piloto e ponteiro da quantidade de pilotos
+/*Objetivo: alterar um piloto que usuÃ¡rio desejar
+ParÃ¢metros: ponteiro da estrutura piloto e ponteiro da quantidade de pilotos
 Retorno: nenhum */
 
 void alterarPilotos(struct Piloto *dadosPilotos, int *qtdPilotos){
 	
-	/*Fazer a chamada da função de apresenta pilotos para a escolha por meio do código*/	
+	/*Fazer a chamada da funÃ§Ã£o de apresenta pilotos para a escolha por meio do cÃ³digo*/	
 	
 }
 
-/*Objetivo: excluir um piloto que usuário desejar
-Parâmetros: ponteiro da estrutura piloto e ponteiro da quantidade de pilotos
+/*Objetivo: excluir um piloto que usuÃ¡rio desejar
+ParÃ¢metros: ponteiro da estrutura piloto e ponteiro da quantidade de pilotos
 Retorno: nenhum */
 
 
 void excluirPilotos(struct Piloto *dadosPilotos, int *qtdPilotos){
 		
-	/*Fazer a chamada da função de apresenta pilotos para a escolha por meio do código*/
+	/*Fazer a chamada da funÃ§Ã£o de apresenta pilotos para a escolha por meio do cÃ³digo*/
 	
 }
 
 /******EQUIPES******/
-
 /*Objetivo: incluir uma equipe 
-Parâmetros: ponteiro da estrutura equipe e ponteiro da quantidade de equipes
+ParÃ¢metros: ponteiro da estrutura equipe e ponteiro da quantidade de equipes
 Retorno: nenhum */
 
 void inclusaoEquipes(struct Equipe *dadosEquipes, int *qtdEquipes){
 	
-	/*Fazer a chamada da função de cadastramento de equipes*/
-	/*Utilizar pesquisa binária para identificar repetição de código de equipe*/
+	/*Fazer a chamada da funÃ§Ã£o de cadastramento de equipes*/
+	/*Utilizar pesquisa binÃ¡ria para identificar repetiÃ§Ã£o de cÃ³digo de equipe*/
 		
 }
 
-/*Objetivo: excluir uma equipe que usuário desejar
-Parâmetros: ponteiro da estrutura equipe e ponteiro da quantidade de equipes
+/*Objetivo: excluir uma equipe que usuÃ¡rio desejar
+ParÃ¢metros: ponteiro da estrutura equipe e ponteiro da quantidade de equipes
 Retorno: nenhum */
 
 void excluirEquipes(struct Equipe *dadosEquipes, int *qtdEquipes){
 		
-	/*Fazer a chamada da função de apresenta equipes para a escolha por meio da sigla*/
+	/*Fazer a chamada da funÃ§Ã£o de apresenta equipes para a escolha por meio da sigla*/
 	
 }
 
 /******CIRCUITOS*******/
-
-/*Objetivo: inclusão de um circuito 
-Parâmetros: ponteiro da estrutura circuito e ponteiro da quantidade de circuitos
+/*Objetivo: inclusÃ£o de um circuito 
+ParÃ¢metros: ponteiro da estrutura circuito e ponteiro da quantidade de circuitos
 Retorno: nenhum */
 
 void inclusaoCircuitos(struct Circuito *dadosCircuito, int *qtdCircuitos){
 	
-	/*Fazer a chamada da função de cadastramento de circuitos*/
-	/*Utilizar pesquisa binária para identificar repetição de código de circuito*/
+	/*Fazer a chamada da funÃ§Ã£o de cadastramento de circuitos*/
+	/*Utilizar pesquisa binÃ¡ria para identificar repetiÃ§Ã£o de cÃ³digo de circuito*/
 		
 }
 
-/*Objetivo: alterar um circuito que usuário desejar
-Parâmetros: ponteiro da estrutura circuito e ponteiro da quantidade de circuitos
+/*Objetivo: alterar um circuito que usuÃ¡rio desejar
+ParÃ¢metros: ponteiro da estrutura circuito e ponteiro da quantidade de circuitos
 Retorno: nenhum*/
 
 void alterarCircuitos(struct Circuito *dadosCircuito, int *qtdCircuitos){
 	
-	/*Fazer a chamada da função de apresenta circuitos para a escolha por meio do código*/	
+	/*Fazer a chamada da funÃ§Ã£o de apresenta circuitos para a escolha por meio do cÃ³digo*/	
 	
 }
 
 /*****VOLTAS*****/
-
-/*Objetivo: inclusão de uma volta 
-Parâmetros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
+/*Objetivo: inclusÃ£o de uma volta 
+ParÃ¢metros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
 Retorno: nenhum */
 
 void inclusaoVoltas(struct Volta *dadosVoltas, int *qtdVoltas){
 	
-	/*Fazer a chamada da função de cadastramento de voltas*/
+	/*Fazer a chamada da funÃ§Ã£o de cadastramento de voltas*/
 }
 
-/*Objetivo: alterar dados de uma volta que usuário desejar
-Parâmetros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
+/*Objetivo: alterar dados de uma volta que usuÃ¡rio desejar
+ParÃ¢metros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
 Retorno: nenhum */
 
 void alterarVoltas(struct Volta *dadosVoltas, int *qtdVoltas){
 	
-	/*Fazer a chamada da função de apresenta voltas para a escolha*/
+	/*Fazer a chamada da funÃ§Ã£o de apresenta voltas para a escolha*/
 	
 }
 
-/*Objetivo: excluir uma volta que usuário desejar
-Parâmetros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
+/*Objetivo: excluir uma volta que usuÃ¡rio desejar
+ParÃ¢metros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
 Retorno: nenhum */
 
 void exclusaoVoltas(struct Volta *dadosVoltas, int *qtdVoltas){
 	
-	/*Fazer a chamada da função de apresenta voltas para a escolha*/
+	/*Fazer a chamada da funÃ§Ã£o de apresenta voltas para a escolha*/
 	
 }
 
