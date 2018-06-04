@@ -61,7 +61,7 @@ void leValidaNome(char texto[], char *nome) {
 	
 	do {
 		qtdEspacos = 0;
-		printf(mensagem);
+		printf(texto);
 		fflush(stdin);
 		scanf("%[^\n]s", nome);
 		for (i = 0; i < strlen(nome); i++) {
@@ -71,6 +71,9 @@ void leValidaNome(char texto[], char *nome) {
 		}
 		if (qtdEspacos == strlen(nome)) {
 			printf("Nome invalido! O nome esta vazio.\n");
+			flag = 0;
+		} else if (strlen(nome) < 2) {
+			printf("Nome invalido! O nome e muito curto.\n");
 			flag = 0;
 		} else {
 			for (i = 0; i < strlen(nome); i++) {
