@@ -7,13 +7,16 @@
 #include <ctype.h>
 #include <string.h>
 #include <conio.h>
+#include <time.h>
+
+#define TAM_DATA 11
 
 /*VALIDAÇÕES*/
 void leValidaFloat(float *pValor, float valorMin, float valorMax, char texto[30]);
 void leValidaNome(char texto[], char *nome);
 void leValidaChar(char *pChar, char X, char Y, char titulo[30]);
 void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]);
-void formataNome(char *nome);
+void leValidaData(char *data);
 
 //Objetivo: lê e validar valores reais
 //Parâmetros:  ponteiro de valores mínimos e máximos
@@ -88,7 +91,6 @@ void leValidaNome(char texto[], char *nome) {
 		}
 	} while(!flag);
 	
-	formataNome(nome);
 }
 
 
@@ -158,23 +160,80 @@ void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]){
 	}while(flag==1);			
 }
 
-//Objetivo: formatar nome 
-//Parâmetros: ponteiro de nome
-//Retorno: nenhum
+/*Objetivo: lê e realizar as validações de datas
+Parâmetros: ponteiro da data
+Retorno: nenhum*/
 
-void formataNome(char *nome){
+void leValidaData(char *data){
 	
-	int i=0;
+	struct tm *local;
+	time_t t;
+	t = time(NULL);
+	local=localtime(&t);
 	
-	nome[0] = toupper(nome[0]);
+	int anoAtual = local->tm_year+1900;
+	int mesAtual = local->tm_mon+1;
+	int diaAtual = local->tm_mday;
 	
-	for(i=1;i<strlen(nome);i++){
-		if(nome[i]==' '){
-			i++;
-			nome[i] = toupper(nome[i]);	
+	
+	char data_aux[TAM_DATA], diaS[TAM_DATA], mesS[TAM_DATA], anoS[TAM_DATA];
+	strcpy(data_aux, "");
+	strcpy(diaS, "");
+	strcpy(mesS, "");
+	strcpy(anoS, "");
+	int i = 0, flag = 1, dia = 0, mes = 0, ano = 0;
+	
+	do {
+		printf("Digite sua data de nascimento: [dd/mm/aaaa]\n");
+		fflush(stdin);
+		flag = scanf("%d/%d/%d", &dia, &mes, &ano);
+		if (!flag) {
+			printf("Data invalida! Apenas numeros sao aceitos.\n");
+		}else if (ano < 1900 || ano > anoAtual) {
+			printf("Ano invalido! Digite um ano no intervalo de 1900 a %d.\n", anoAtual);
+			flag = 0;
+		}else if (mes < 1 || mes > 12) {
+			printf("Mes invalido! Digite um mes no intervalo de 1 a 12.\n");
+			flag = 0;
+		}else if (ano == anoAtual){
+			if(mes > mesAtual){
+				printf("Data Invalida! Digite novamente\n");
+				flag=0;
+			}
+		}else if ((dia < 1 || dia > 31) && (mes == 1 || mes == 3 || mes == 5 || mes == 7 || mes == 8 || mes == 10 || mes == 12)) {
+			printf("Dia invalido! Nos meses de Janeiro, Marco, Maio, Julho, Agosto, Outubro e Dezembro, os dias vao de 1 a 31.\n");
+			flag = 0;
+	    }else if ((dia < 1 || dia > 30) && (mes == 4 || mes == 6 || mes == 9 || mes == 11)) {
+	    	printf("Dia invalido! Nos meses de Abril, Junho, Setembro e Novembro, os dias vao de 1 a 30.\n");
+	    	flag = 0;
+		}else if (dia == 29 && mes == 2 && (ano % 400 == 0 || (ano % 4 == 0 && ano % 100 != 0))) {
+			flag = 1;
+		}else if ((dia < 1 || dia > 28) && mes == 2) {
+			printf("Dia invalido! No mes de Fevereiro, os dias vao de 1 a 28.\n");
+			flag = 0;
 		}else{
-			nome[i] = tolower(nome[i]);
+			flag = 1;
 		}
-	}
+		
+		if((ano == anoAtual) && (mes == mesAtual)){
+			if(dia > diaAtual){
+				printf("Data Invalida! Digite novamente\n");
+				flag=0;
+			}
+		}
+	} while(!flag);
+	
+	snprintf(diaS, TAM_DATA, "%d", dia);
+	snprintf(mesS, TAM_DATA, "%d", mes);
+	snprintf(anoS, TAM_DATA, "%d", ano);
+	
+	strcat(data_aux, diaS);
+	strcat(data_aux, "/");
+	strcat(data_aux, mesS);
+	strcat(data_aux, "/");
+	strcat(data_aux, anoS);
+	
+	strcpy(data,data_aux);
 }
+
 #endif
