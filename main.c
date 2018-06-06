@@ -6,7 +6,7 @@ Saída: de acordo com o menu de opções
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <menu.c>
+#include </menu/menu.c>
 
 struct Tempo{
 	int minutos;
