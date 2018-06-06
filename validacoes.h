@@ -16,7 +16,7 @@ void leValidaFloat(float *pValor, float valorMin, float valorMax, char texto[30]
 void leValidaNome(char texto[], char *nome);
 void leValidaChar(char *pChar, char X, char Y, char titulo[30]);
 void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]);
-void leValidaData(char *data);
+void leValidaData(char *data, char *texto);
 
 //Objetivo: lê e validar valores reais
 //Parâmetros:  ponteiro de valores mínimos e máximos
@@ -161,10 +161,10 @@ void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]){
 }
 
 /*Objetivo: lê e realizar as validações de datas
-Parâmetros: ponteiro da data
+Parâmetros: ponteiro da data e texto
 Retorno: nenhum*/
 
-void leValidaData(char *data){
+void leValidaData(char *data, char *texto){
 	
 	struct tm *local;
 	time_t t;
@@ -175,7 +175,6 @@ void leValidaData(char *data){
 	int mesAtual = local->tm_mon+1;
 	int diaAtual = local->tm_mday;
 	
-	
 	char data_aux[TAM_DATA], diaS[TAM_DATA], mesS[TAM_DATA], anoS[TAM_DATA];
 	strcpy(data_aux, "");
 	strcpy(diaS, "");
@@ -184,8 +183,8 @@ void leValidaData(char *data){
 	int i = 0, flag = 1, dia = 0, mes = 0, ano = 0;
 	
 	do {
-		printf("Digite sua data de nascimento: [dd/mm/aaaa]\n");
 		fflush(stdin);
+		printf(texto);
 		flag = scanf("%d/%d/%d", &dia, &mes, &ano);
 		if (!flag) {
 			printf("Data invalida! Apenas numeros sao aceitos.\n");
