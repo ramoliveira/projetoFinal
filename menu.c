@@ -159,7 +159,7 @@ void apresentaEscolheMenuRelatorio(char *opcao) {
 	do {
 		cabecalho("Menu de Relatorios");
 		OPCOES
-		printf("(1) - Relacionar todos os dados;\n");
+		printf("(1) - Relacionar dados de acordo com o tipo escolhido;\n");
 		printf("(2) - Pesquisar pelo nome do piloto;\n");
 		printf("(3) - Pesquisar pelo circuito ou data;\n");
 		printf("(4) - Relacionar todos os circuitos;\n");
@@ -177,6 +177,49 @@ void apresentaEscolheMenuRelatorio(char *opcao) {
 			flag = 1;
 		}
 	} while(!flag);
+}
+
+void apresentaEscolheMenuRelatorios1(char *opcao) {
+	int flag = 1;
+	
+	do {
+		cabecalho("Menu de Relatorios(1)");
+		OPCOES
+		printf("(1) - Dados gerais dos pilotos;\n");
+		printf("(2) - Dados gerais das equipes;\n");
+		printf("(3) - Dados gerais dos circuitos;\n");
+		printf("(4) - Dados gerais das voltas;\n");
+		printf("(R) - Retornar ao menu de relatorios.\n");
+		scanf(" %c", opcao);
+		*opcao = tolower(*opcao);
+		if ((*opcao < 49 || *opcao > 52) && (*opcao != 'r')) {
+			system("cls");
+			MSG_MENU_ERRO
+			flag = 0;
+		} else {
+			flag = 1;
+		}
+	} while(!flag);
+}
+
+void apresentaEscolheMenuRepete(char *opcao) {
+	int flag = 1;
+	
+	do {
+		cabecalho("Repetir?");
+		OPCOES
+		printf("(S) - Sim;\n");
+		printf("(N) - Nao.\n");
+		scanf(" %c", opcao);
+		*opcao = tolower(*opcao);
+		if (*opcao != 's' && *opcao != 'n') {
+			system("cls");
+			MSG_MENU_ERRO
+			flag = 0;
+		} else {
+			flag = 1;
+		}
+	} while(!flag);	
 }
 
 /*
@@ -260,7 +303,7 @@ Saída: Nenhuma.
 void chamaFuncoesMenuEquipe(char *opcao) {
 	switch(*opcao) {
 		case '1':
-			//inclusaoEquipes();
+			inclusaoEquipes();
 			break;
 		case '2':
 			//excluirEquipes();
@@ -318,8 +361,14 @@ Saída: Nenhuma.
 */
 
 void chamaFuncoesMenuRelatorio(char *opcao) {
+	char opcaoDentroMenu = '\0';
 	switch(*opcao) {
 		case '1':
+			do {
+				system("cls");
+				apresentaEscolheMenuRelatorios1(&opcaoDentroMenu);
+				chamaFuncoesMenuRelatorios1(&opcaoDentroMenu);
+			} while(opcaoDentroMenu != 'r');
 			break;
 		case '2':
 			break;
@@ -332,6 +381,21 @@ void chamaFuncoesMenuRelatorio(char *opcao) {
 		case '6':
 			break;
 		case '7':
+			break;
+		default:
+			return;
+	}
+}
+
+void chamaFuncoesMenuRelatorios1(char *opcao) {
+	switch(*opcao) {
+		case '1':
+			break;
+		case '2':
+			break;
+		case '3':
+			break;
+		case '4':
 			break;
 		default:
 			return;

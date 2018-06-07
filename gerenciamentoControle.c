@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "menu.h"
+#include "validacoes.h"
 #include "ui.h"
 #include "gerenciamento.h"
 #include "storage.h"
@@ -68,18 +70,58 @@ void inclusaoEquipes(){
 	/*Utilizar pesquisa binária para identificar repetição de código de equipe*/
 	
 	FILE *f;
+	int qtdEquipCad, i = 0, flag;
+	char opcao = '\0';
+	struct Equipe *pEquipe, *pEquipeAux, equipeCadastro;
 	
 	if (!existeArquivo("equipes.bin")) {
 		criaArquivo("equipes.bin");
 	} 
 	
 	if((f = fopen("equipes.bin", "r+b")) == NULL) {
-		printf("Arquivo indisponivel.\n");
+		printf("Arquivo ""equipes.bin"" indisponivel.\n");
 		exit(EXIT_FAILURE);
-	} else {
-		
-		
 	}
+	do {
+		qtdEquipCad = 0;
+		coletaDadosEquipe(pEquipe, &qtdEquipCad, f);
+		do {
+			system("cls");
+			strcpy(equipeCadastro.nome, "");
+			strcpy(equipeCadastro.pais, "");
+			strcpy(equipeCadastro.sigla, "");
+			flag = 1;
+			cabecalho("Cadastro de Equipe");
+			leValidaNome("Digite o nome da equipe:", equipeCadastro.nome);
+			//leValidaSigla("Digite a sigla", equipeCadastro.sigla);
+			leValidaNome("Digite o nome do pais da equipe:", equipeCadastro.pais);
+			if (qtdEquipCad != 0) {
+				for (i = 0; i < qtdEquipCad; i++) {
+					if (stricmp((pEquipe+i)->sigla, equipeCadastro.sigla) == 0) {
+						printf("Equipe Invalida! Esta equipe ja esta cadastrada!\n");
+						flag = 0;
+						break;
+					} else {
+						flag = 1;
+					}
+				}
+			}
+			if (flag) {
+				fseek(f, 0, SEEK_END);
+				fwrite(&equipeCadastro, sizeof(struct Equipe), 1, f);
+			}
+		} while(!flag);
+		apresentaEscolheMenuRepete(&opcao);
+		if (opcao == 's') {
+			if (qtdEquipCad != 0) {
+				free(pEquipe);
+			}
+		}
+	} while(opcao == 's');
+	if (qtdEquipCad != 0) {
+		free(pEquipe);
+	}
+	fclose(f);
 }
 
 /*Objetivo: excluir uma equipe que usuário desejar

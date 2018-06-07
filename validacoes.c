@@ -1,22 +1,10 @@
-/*Arquivo de Cabeçalho - Funções*/
-#ifndef _VALIDACOES_h
-#define _VALIDACOES_h
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
 #include <conio.h>
 #include <time.h>
-
-#define TAM_DATA 11
-
-/*VALIDAÇÕES*/
-void leValidaFloat(float *pValor, float valorMin, float valorMax, char texto[30]);
-void leValidaNome(char texto[], char *nome);
-void leValidaChar(char *pChar, char X, char Y, char titulo[30]);
-void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]);
-void leValidaData(char *data, char *texto);
+#include "validacoes.h"
 
 //Objetivo: lê e validar valores reais
 //Parâmetros:  ponteiro de valores mínimos e máximos
@@ -234,4 +222,3 @@ void leValidaData(char *data, char *texto){
 	
 	strcpy(data,data_aux);
 }
-#endif

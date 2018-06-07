@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "gerenciamento.h"
 #include "storage.h"
 
 /*
@@ -26,7 +27,7 @@ Saída: Nenhuma.
 
 void criaArquivo(char nomeArquivo[TAM_NOME]) {
 	FILE *f;
-	if((f = fopen(nomeArquivo, "w+b")) == NULL) {
+	if((f = fopen(nomeArquivo, "wb")) == NULL) {
 		printf("Nao foi possivel criar o arquivo %s.\n", nomeArquivo);
 		getch();
 		exit(EXIT_FAILURE);
@@ -35,26 +36,27 @@ void criaArquivo(char nomeArquivo[TAM_NOME]) {
 	}
 }
 
-void coletaDadosEquipe(struct Equipe *pEquipe, int *qtdEquipCad) {
-	FILE *f;
+void coletaDadosEquipe(struct Equipe *pEquipe, int *qtdEquipCad, FILE *f) {
+	struct Equipe aux;
+	int i;
 	
+	fseek(f, 0, SEEK_SET);
+	while(!feof(f)) {
+		if(fread(&aux, sizeof(struct Equipe), 1, f) == 1) {
+			*qtdEquipCad++;
+		} else {
+			break;
+		}
+	}
+	if (qtdEquipCad != 0) {
+		pEquipe = (struct Equipe*) malloc(*qtdEquipCad * sizeof(struct Equipe));
 		fseek(f, 0, SEEK_SET);
 		while(!feof(f)) {
-			if(fread(&aux, sizeof(struct Equipe), 1, f) == 1) {
-				qtdEquipCad++;
+			if(fread((pEquipe+i), sizeof(struct Equipe), 1, f) == 1) {
+				i++;
 			} else {
 				break;
 			}
 		}
-		if (qtdEquipCad != 0) {
-			pEquipe = malloc(qtdEquipCad * sizeof(struct Equipe));
-			fseek(f, 0, SEEK_SET);
-			while(!feof(f)) {
-				if(fread((pEquipe+i), sizeof(struct Equipe), 1, f) == 1) {
-					i++;
-				} else {
-					break;
-				}
-			}
-		}
+	}
 }
