@@ -34,3 +34,27 @@ void criaArquivo(char nomeArquivo[TAM_NOME]) {
 		fclose(f);
 	}
 }
+
+void coletaDadosEquipe(struct Equipe *pEquipe, int *qtdEquipCad) {
+	FILE *f;
+	
+		fseek(f, 0, SEEK_SET);
+		while(!feof(f)) {
+			if(fread(&aux, sizeof(struct Equipe), 1, f) == 1) {
+				qtdEquipCad++;
+			} else {
+				break;
+			}
+		}
+		if (qtdEquipCad != 0) {
+			pEquipe = malloc(qtdEquipCad * sizeof(struct Equipe));
+			fseek(f, 0, SEEK_SET);
+			while(!feof(f)) {
+				if(fread((pEquipe+i), sizeof(struct Equipe), 1, f) == 1) {
+					i++;
+				} else {
+					break;
+				}
+			}
+		}
+}
