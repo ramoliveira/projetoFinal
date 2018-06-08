@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "gerenciamento.h"
 #include "storage.h"
 
@@ -38,25 +39,24 @@ void criaArquivo(char nomeArquivo[TAM_NOME]) {
 
 void coletaDadosEquipe(struct Equipe *pEquipe, int *qtdEquipCad, FILE *f) {
 	struct Equipe aux;
-	int i;
+	int i = 0;
 	
 	fseek(f, 0, SEEK_SET);
-	while(!feof(f)) {
-		if(fread(&aux, sizeof(struct Equipe), 1, f) == 1) {
-			*qtdEquipCad++;
-		} else {
-			break;
-		}
+	while(fread(&aux, sizeof(struct Equipe), 1, f) == 1) {
+		*qtdEquipCad += 1;
 	}
-	if (qtdEquipCad != 0) {
-		pEquipe = (struct Equipe*) malloc(*qtdEquipCad * sizeof(struct Equipe));
+	if (*qtdEquipCad != 0) {
+		if((pEquipe = (struct Equipe*) malloc(*qtdEquipCad * sizeof(struct Equipe))) == NULL) {
+			printf("Nao foi possivel alocar.\n");
+		}
 		fseek(f, 0, SEEK_SET);
-		while(!feof(f)) {
-			if(fread((pEquipe+i), sizeof(struct Equipe), 1, f) == 1) {
-				i++;
-			} else {
-				break;
-			}
+		while(fread((pEquipe+i), sizeof(struct Equipe), 1, f) == 1) {
+			i++;
 		}
+		for (i = 0; i < *qtdEquipCad; i++) {
+			printf("EQUIPE: %s\n", (*(pEquipe+i)).nome);
+		}
+		getch();
 	}
+	
 }

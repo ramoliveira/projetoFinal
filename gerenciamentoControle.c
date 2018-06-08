@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "menu.h"
 #include "validacoes.h"
 #include "ui.h"
@@ -72,19 +73,27 @@ void inclusaoEquipes(){
 	FILE *f;
 	int qtdEquipCad, i = 0, flag;
 	char opcao = '\0';
-	struct Equipe *pEquipe, *pEquipeAux, equipeCadastro;
+	struct Equipe *pEquipe, equipeCadastro;
 	
-	if (!existeArquivo("equipes.bin")) {
-		criaArquivo("equipes.bin");
-	} 
-	
-	if((f = fopen("equipes.bin", "r+b")) == NULL) {
-		printf("Arquivo ""equipes.bin"" indisponivel.\n");
+	if (!existeArquivo("equipes.dat")) {
+		criaArquivo("equipes.dat");
+	}
+	 
+	if((f = fopen("equipes.dat", "rb+")) == NULL) {
+		printf("Arquivo ""equipes.dat"" indisponivel.\n");
 		exit(EXIT_FAILURE);
 	}
 	do {
 		qtdEquipCad = 0;
+		printf("pEquipe = %d\n", pEquipe);
 		coletaDadosEquipe(pEquipe, &qtdEquipCad, f);
+		printf("HERE\n");
+		printf("%d\n", qtdEquipCad);
+		printf("pEquipe = %d\n", pEquipe);
+		for (i = 0; i < qtdEquipCad; i++) {
+			printf("EQUIPE: %s\n", pEquipe[i].nome);
+		}
+		getch();
 		do {
 			system("cls");
 			strcpy(equipeCadastro.nome, "");
@@ -92,9 +101,9 @@ void inclusaoEquipes(){
 			strcpy(equipeCadastro.sigla, "");
 			flag = 1;
 			cabecalho("Cadastro de Equipe");
-			leValidaNome("Digite o nome da equipe:", equipeCadastro.nome);
-			//leValidaSigla("Digite a sigla", equipeCadastro.sigla);
-			leValidaNome("Digite o nome do pais da equipe:", equipeCadastro.pais);
+			leValidaNome("Digite o nome da equipe: ", equipeCadastro.nome);
+			leValidaSigla("Digite a sigla [SSS]: ", equipeCadastro.sigla);
+			leValidaNome("Digite o nome do pais da equipe: ", equipeCadastro.pais);
 			if (qtdEquipCad != 0) {
 				for (i = 0; i < qtdEquipCad; i++) {
 					if (stricmp((pEquipe+i)->sigla, equipeCadastro.sigla) == 0) {
@@ -112,10 +121,8 @@ void inclusaoEquipes(){
 			}
 		} while(!flag);
 		apresentaEscolheMenuRepete(&opcao);
-		if (opcao == 's') {
-			if (qtdEquipCad != 0) {
-				free(pEquipe);
-			}
+		if (qtdEquipCad != 0) {
+			free(pEquipe);
 		}
 	} while(opcao == 's');
 	if (qtdEquipCad != 0) {

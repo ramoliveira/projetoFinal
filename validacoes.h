@@ -17,6 +17,7 @@ void leValidaNome(char texto[], char *nome);
 void leValidaChar(char *pChar, char X, char Y, char titulo[30]);
 void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]);
 void leValidaData(char *data, char *texto);
+void leValidaSiglas(char texto[], char *sigla);
 
 //Objetivo: lê e validar valores reais
 //Parâmetros:  ponteiro de valores mínimos e máximos
@@ -233,5 +234,38 @@ void leValidaData(char *data, char *texto){
 	strcat(data_aux, anoS);
 	
 	strcpy(data,data_aux);
+}
+
+void leValidaSigla(char texto[], char *sigla) {
+	int flag = 1, qtdEspacos, i;
+	
+	do {
+		qtdEspacos = 0;
+		printf(texto);
+		fflush(stdin);
+		scanf("%s", sigla);
+		for (i = 0; i < strlen(sigla); i++) {
+			if (sigla[i] == '\0' || sigla[i] == ' ' || sigla[i] == '\n') {
+				qtdEspacos++;
+			}
+		}
+		if (qtdEspacos == strlen(sigla)) {
+			printf("Sigla invalida! A sigla esta vazia.\n");
+			flag = 0;
+		} else if (strlen(sigla) != 3) {
+			printf("Sigla invalida! A sigla deve ter 3 letras.\n");
+			flag = 0;
+		} else {
+			for (i = 0; i < strlen(sigla); i++) {
+				if (ispunct(sigla[i]) != 0) {
+					printf("Sigla invalida! Pontos nao sao validos.\n");
+					flag = 0;
+					break;
+				} else {
+					flag = 1;
+				}
+			}
+		}
+	} while(!flag);
 }
 #endif
