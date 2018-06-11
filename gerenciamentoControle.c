@@ -43,7 +43,7 @@ void inclusaoPilotos(){
 Parâmetros: ponteiro da estrutura piloto e ponteiro da quantidade de pilotos
 Retorno: nenhum */
 
-void alterarPilotos(struct Piloto *dadosPilotos, int *qtdPilotos){
+void alterarPilotos(piloto *dadosPilotos, int *qtdPilotos){
 	
 	/*Fazer a chamada da função de apresenta pilotos para a escolha por meio do código*/	
 	
@@ -54,7 +54,7 @@ Parâmetros: ponteiro da estrutura piloto e ponteiro da quantidade de pilotos
 Retorno: nenhum */
 
 
-void excluirPilotos(struct Piloto *dadosPilotos, int *qtdPilotos){
+void excluirPilotos(piloto *dadosPilotos, int *qtdPilotos){
 		
 	/*Fazer a chamada da função de apresenta pilotos para a escolha por meio do código*/
 	
@@ -73,7 +73,7 @@ void inclusaoEquipes(){
 	FILE *f;
 	int qtdEquipCad, i = 0, flag;
 	char opcao = '\0';
-	struct Equipe *pEquipe, equipeCadastro;
+	equipe equipeCadastro, *pEquipe;
 	
 	if (!existeArquivo("equipes.dat")) {
 		criaArquivo("equipes.dat");
@@ -85,15 +85,7 @@ void inclusaoEquipes(){
 	}
 	do {
 		qtdEquipCad = 0;
-		printf("pEquipe = %d\n", pEquipe);
-		coletaDadosEquipe(pEquipe, &qtdEquipCad, f);
-		printf("HERE\n");
-		printf("%d\n", qtdEquipCad);
-		printf("pEquipe = %d\n", pEquipe);
-		for (i = 0; i < qtdEquipCad; i++) {
-			printf("EQUIPE: %s\n", pEquipe[i].nome);
-		}
-		getch();
+		pEquipe = coletaDadosEquipe(&qtdEquipCad, f);
 		do {
 			system("cls");
 			strcpy(equipeCadastro.nome, "");
@@ -106,7 +98,7 @@ void inclusaoEquipes(){
 			leValidaNome("Digite o nome do pais da equipe: ", equipeCadastro.pais);
 			if (qtdEquipCad != 0) {
 				for (i = 0; i < qtdEquipCad; i++) {
-					if (stricmp((pEquipe+i)->sigla, equipeCadastro.sigla) == 0) {
+					if (stricmp(pEquipe[i].sigla, equipeCadastro.sigla) == 0) {
 						printf("Equipe Invalida! Esta equipe ja esta cadastrada!\n");
 						flag = 0;
 						break;
@@ -117,7 +109,7 @@ void inclusaoEquipes(){
 			}
 			if (flag) {
 				fseek(f, 0, SEEK_END);
-				fwrite(&equipeCadastro, sizeof(struct Equipe), 1, f);
+				fwrite(&equipeCadastro, sizeof(equipe), 1, f);
 			}
 		} while(!flag);
 		apresentaEscolheMenuRepete(&opcao);
@@ -125,9 +117,6 @@ void inclusaoEquipes(){
 			free(pEquipe);
 		}
 	} while(opcao == 's');
-	if (qtdEquipCad != 0) {
-		free(pEquipe);
-	}
 	fclose(f);
 }
 
@@ -135,7 +124,7 @@ void inclusaoEquipes(){
 Parâmetros: ponteiro da estrutura equipe e ponteiro da quantidade de equipes
 Retorno: nenhum */
 
-void excluirEquipes(struct Equipe *dadosEquipes, int *qtdEquipes){
+void excluirEquipes(equipe *dadosEquipes, int *qtdEquipes){
 		
 	/*Fazer a chamada da função de apresenta equipes para a escolha por meio da sigla*/
 	
@@ -146,7 +135,7 @@ void excluirEquipes(struct Equipe *dadosEquipes, int *qtdEquipes){
 Parâmetros: ponteiro da estrutura circuito e ponteiro da quantidade de circuitos
 Retorno: nenhum */
 
-void inclusaoCircuitos(struct Circuito *dadosCircuito, int *qtdCircuitos){
+void inclusaoCircuitos(circuito *dadosCircuito, int *qtdCircuitos){
 	
 	/*Fazer a chamada da função de cadastramento de circuitos*/
 	/*Utilizar pesquisa binária para identificar repetição de código de circuito*/
@@ -157,7 +146,7 @@ void inclusaoCircuitos(struct Circuito *dadosCircuito, int *qtdCircuitos){
 Parâmetros: ponteiro da estrutura circuito e ponteiro da quantidade de circuitos
 Retorno: nenhum*/
 
-void alterarCircuitos(struct Circuito *dadosCircuito, int *qtdCircuitos){
+void alterarCircuitos(circuito *dadosCircuito, int *qtdCircuitos){
 	
 	/*Fazer a chamada da função de apresenta circuitos para a escolha por meio do código*/	
 	
@@ -168,7 +157,7 @@ void alterarCircuitos(struct Circuito *dadosCircuito, int *qtdCircuitos){
 Parâmetros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
 Retorno: nenhum */
 
-void inclusaoVoltas(struct Volta *dadosVoltas, int *qtdVoltas){
+void inclusaoVoltas(volta *dadosVoltas, int *qtdVoltas){
 	
 	/*Fazer a chamada da função de cadastramento de voltas*/
 }
@@ -177,7 +166,7 @@ void inclusaoVoltas(struct Volta *dadosVoltas, int *qtdVoltas){
 Parâmetros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
 Retorno: nenhum */
 
-void alterarVoltas(struct Volta *dadosVoltas, int *qtdVoltas){
+void alterarVoltas(volta *dadosVoltas, int *qtdVoltas){
 	
 	/*Fazer a chamada da função de apresenta voltas para a escolha*/
 	
@@ -187,7 +176,7 @@ void alterarVoltas(struct Volta *dadosVoltas, int *qtdVoltas){
 Parâmetros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
 Retorno: nenhum */
 
-void exclusaoVoltas(struct Volta *dadosVoltas, int *qtdVoltas){
+void exclusaoVoltas(volta *dadosVoltas, int *qtdVoltas){
 	
 	/*Fazer a chamada da função de apresenta voltas para a escolha*/
 	

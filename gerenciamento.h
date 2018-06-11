@@ -5,52 +5,52 @@
 #define TAM_SIGLA 4
 #define TAM_DATA 11
 
-struct Tempo{
+typedef struct Tempo{
 	int minutos;
 	int segundos;
 	float milisegundos;
-};
+} tempo;
 
-struct Piloto{
+typedef struct Piloto{
 	int id;
 	char nome[TAM_NOME];
 	char equipe[TAM_SIGLA];
 	char dataNascimento[TAM_DATA];
 	char sexo;
 	char pais[TAM_NOME];
-};
+} piloto;
 
-struct Equipe{
+typedef struct Equipe{
 	char nome[TAM_NOME];
 	char sigla[TAM_SIGLA];
 	char pais[TAM_NOME];
-};
+} equipe;
 
-struct Circuito{
+typedef struct Circuito{
 	int id;
 	char nome[TAM_NOME];
 	char pais[TAM_NOME];
 	float quilometros;
-	struct Tempo menorTempo;
+	tempo menorTempo;
 	char pilotoMenorTempo[TAM_NOME];
-};
+} circuito;
 
-struct Volta{
+typedef struct Volta{
 	int piloto;
 	int circuito;
 	char equipePiloto[TAM_SIGLA];
 	char dataVolta[TAM_DATA];
-	struct Tempo melhorVolta;
-};
+	tempo melhorVolta;
+} volta;
 
 void inclusaoPilotos();
-void alterarPilotos(struct Piloto *dadosPilotos, int *qtdPilotos);
-void excluirPilotos(struct Piloto *dadosPilotos, int *qtdPilotos);
+void alterarPilotos(piloto *dadosPilotos, int *qtdPilotos);
+void excluirPilotos(piloto *dadosPilotos, int *qtdPilotos);
 void inclusaoEquipes();
-void excluirEquipes(struct Equipe *dadosEquipes, int *qtdEquipes);
-void inclusaoCircuitos(struct Circuito *dadosCircuito, int *qtdCircuitos);
-void alterarCircuitos(struct Circuito *dadosCircuito, int *qtdCircuitos);
-void inclusaoVoltas(struct Volta *dadosVoltas, int *qtdVoltas);
-void alterarVoltas(struct Volta *dadosVoltas, int *qtdVoltas);
-void exclusaoVoltas(struct Volta *dadosVoltas, int *qtdVoltas);
+void excluirEquipes(equipe *dadosEquipes, int *qtdEquipes);
+void inclusaoCircuitos(circuito *dadosCircuito, int *qtdCircuitos);
+void alterarCircuitos(circuito *dadosCircuito, int *qtdCircuitos);
+void inclusaoVoltas(volta *dadosVoltas, int *qtdVoltas);
+void alterarVoltas(volta *dadosVoltas, int *qtdVoltas);
+void exclusaoVoltas(volta *dadosVoltas, int *qtdVoltas);
 #endif
