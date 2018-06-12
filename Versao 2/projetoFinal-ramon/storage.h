@@ -6,9 +6,9 @@
 
 int existeArquivo(char nomeArquivo[TAM_NOME]);
 void criaArquivo(char nomeArquivo[TAM_NOME]);
-void coletaDadosEquipe(struct Equipe *pEquipe, int *qtdEquipCad, FILE *f);
-void coletaDadosPiloto(struct Piloto *pPiloto, int *qtdPilotosCad, FILE *f);
-void coletaDadosCircuito(struct Circuito *pCircuito, int *qtdCircuitosCad, FILE *f);
-void coletaDadosVolta(struct Volta *pVolta, int *qtdVoltasCad, FILE *f);
+equipe* coletaDadosEquipe(int *qtdEquipCad, FILE *f);
+piloto* coletaDadosPiloto(int *qtdPilotosCad, FILE *f);
+circuito* coletaDadosCircuito(int *qtdCircuitosCad, FILE *f);
+volta* coletaDadosVolta(int *qtdVoltasCad, FILE *f);
  
 #endif
