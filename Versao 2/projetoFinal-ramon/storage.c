@@ -4,9 +4,9 @@
 #include "storage.h"
 
 /*
-Objetivo: Verificar a existência de um arquivo.
-Entrada: Nome do arquivo a ser verificada a existência.
-Saída: Inteiro com o valor lógico referente a existência do arquivo.
+Objetivo: Verificar a existÃªncia de um arquivo.
+Entrada: Nome do arquivo a ser verificada a existÃªncia.
+SaÃ­da: Inteiro com o valor lÃ³gico referente a existÃªncia do arquivo.
 */
 
 int existeArquivo(char nomeArquivo[TAM_NOME]){
@@ -20,9 +20,9 @@ int existeArquivo(char nomeArquivo[TAM_NOME]){
 }
 
 /*
-Objetivo: Criar um arquivo binário.
+Objetivo: Criar um arquivo binÃ¡rio.
 Entrada: Nome do arquivo a ser criado.
-Saída: Nenhuma.
+SaÃ­da: Nenhuma.
 */
 
 void criaArquivo(char nomeArquivo[TAM_NOME]) {
@@ -36,19 +36,19 @@ void criaArquivo(char nomeArquivo[TAM_NOME]) {
 	}
 }
 
-/*Objetivo: coleta a quantidade de cadastros do arquivo equipe e aloca um espaço de memória
-Entrada: ponteiro da estrutura de equipe, ponteiro da quantidade de equipe, ponteiro do arquivo
-Saída: nenhum
+/*Objetivo: coleta a quantidade de cadastros do arquivo equipe e aloca um espaÃ§o de memÃ³ria
+Entrada: ponteiro da quantidade de equipe, ponteiro do arquivo
+SaÃ­da: ponteiro de equipe
 */
 
-void coletaDadosEquipe(struct Equipe *pEquipe, int *qtdEquipCad, FILE *f) {
+equipe* coletaDadosEquipe(int *qtdEquipCad, FILE *f) {
 	
-	struct Equipe aux;
+	equipe aux, *pEquipe;
 	int i=0;	
 		
 	fseek(f, 0, SEEK_SET);
 	while(!feof(f)) {
-		if(fread(&aux, sizeof(struct Equipe), 1, f) == 1) {
+		if(fread(&aux, sizeof(equipe), 1, f) == 1) {
 		*qtdEquipCad+=1;
 		} else {
 			break;
@@ -56,31 +56,33 @@ void coletaDadosEquipe(struct Equipe *pEquipe, int *qtdEquipCad, FILE *f) {
 	}
 	
 	if (*qtdEquipCad != 0) {
-		pEquipe = malloc((*qtdEquipCad) * sizeof(struct Equipe));
+		pEquipe = malloc((*qtdEquipCad) * sizeof(equipe));
 		fseek(f, 0, SEEK_SET);
 		while(!feof(f)) {
-			if(fread((pEquipe+i), sizeof(struct Equipe), 1, f) == 1) {
+			if(fread((pEquipe+i), sizeof(equipe), 1, f) == 1) {
 				i++;
 			} else {
 				break;
 			}
 		}
 	}
+	
+	return pEquipe;
 }
 
-/*Objetivo: coleta a quantidade de cadastros do arquivo piloto e aloca um espaço de memória
-Entrada: ponteiro da estrutura de piloto, ponteiro da quantidade de piloto, ponteiro do arquivo
-Saída: nenhum
+/*Objetivo: coleta a quantidade de cadastros do arquivo piloto e aloca um espaÃ§o de memÃ³ria
+Entrada: ponteiro da quantidade de piloto, ponteiro do arquivo
+SaÃ­da: ponteiro de piloto
 */
 
-void coletaDadosPiloto(struct Piloto *pPiloto, int *qtdPilotosCad, FILE *f) {
+piloto* coletaDadosPiloto(int *qtdPilotosCad, FILE *f) {
 	
-	struct Piloto aux;
+	piloto aux, *pPiloto;
 	int i=0;
 	
 	fseek(f, 0, SEEK_SET);
 	while(!feof(f)) {
-		if(fread(&aux, sizeof(struct Piloto), 1, f) == 1) {
+		if(fread(&aux, sizeof(piloto), 1, f) == 1) {
 			*qtdPilotosCad += 1;
 		} else {
 			break;
@@ -88,62 +90,66 @@ void coletaDadosPiloto(struct Piloto *pPiloto, int *qtdPilotosCad, FILE *f) {
 	}
 	
 	if (*qtdPilotosCad != 0) {
-		pPiloto = malloc((*qtdPilotosCad) * sizeof(struct Piloto));
+		pPiloto = malloc((*qtdPilotosCad) * sizeof(piloto));
 		fseek(f, 0, SEEK_SET);
 		while(!feof(f)) {
-			if(fread((pPiloto+i), sizeof(struct Piloto), 1, f) == 1) {
+			if(fread((pPiloto+i), sizeof(piloto), 1, f) == 1) {
 				i++;
 			} else {
 				break;
 			}
 		}
 	}
+	
+	return pPiloto;
 }
 
-/*Objetivo: coleta a quantidade de cadastros do arquivo circuito e aloca um espaço de memória
-Entrada: ponteiro da estrutura de circuito, ponteiro da quantidade de circuito, ponteiro do arquivo
-Saída: nenhum
+/*Objetivo: coleta a quantidade de cadastros do arquivo circuito e aloca um espaÃ§o de memÃ³ria
+Entrada: ponteiro da quantidade de circuito, ponteiro do arquivo
+SaÃ­da: ponteiro de circuito
 */
 
-void coletaDadosCircuito(struct Circuito *pCircuito, int *qtdCircuitosCad, FILE *f) {
+circuito* coletaDadosCircuito(int *qtdCircuitosCad, FILE *f) {
 	
 	struct Circuito aux;
 	int i=0;
 	
 	fseek(f, 0, SEEK_SET);
 	while(!feof(f)) {
-		if(fread(&aux, sizeof(struct Circuito), 1, f) == 1) {
+		if(fread(&aux, sizeof(circuito), 1, f) == 1) {
 			*qtdCircuitosCad+=1;
 		} else {
 			break;
 		}
 	}
 	if (*qtdCircuitosCad != 0) {
-		pCircuito = malloc((*qtdCircuitosCad) * sizeof(struct Circuito));
+		pCircuito = malloc((*qtdCircuitosCad) * sizeof(circuito));
 		fseek(f, 0, SEEK_SET);
 		while(!feof(f)) {
-			if(fread((pCircuito+i), sizeof(struct Circuito), 1, f) == 1) {
+			if(fread((pCircuito+i), sizeof(circuito), 1, f) == 1) {
 				i++;
 			} else {
 				break;
 			}
 		}
 	}
+	
+	return pCircuito;
 }
 
-/*Objetivo: coleta a quantidade de cadastros do arquivo voltas e aloca um espaço de memória
-Entrada: ponteiro da estrutura de volta, ponteiro da quantidade de volta, ponteiro do arquivo
-Saída: nenhum
+/*Objetivo: coleta a quantidade de cadastros do arquivo voltas e aloca um espaÃ§o de memÃ³ria
+Entrada: ponteiro da quantidade de volta, ponteiro do arquivo
+SaÃ­da: ponteiro de volta
 */
 
-void coletaDadosVolta(struct Volta *pVolta, int *qtdVoltasCad, FILE *f) {
+volta* coletaDadosVolta(int *qtdVoltasCad, FILE *f) {
 	
-	struct Volta aux;
+	volta aux, *pVolta;
 	int i=0;
 	
 	fseek(f, 0, SEEK_SET);
 	while(!feof(f)) {
-		if(fread(&aux, sizeof(struct Volta), 1, f) == 1) {
+		if(fread(&aux, sizeof(volta), 1, f) == 1) {
 			*qtdVoltasCad+=1;
 		} else {
 			break;
@@ -151,17 +157,21 @@ void coletaDadosVolta(struct Volta *pVolta, int *qtdVoltasCad, FILE *f) {
 	}
 	
 	if (*qtdVoltasCad != 0) {
-		pVolta = malloc((*qtdVoltasCad) * sizeof(struct Volta));
+		pVolta = malloc((*qtdVoltasCad) * sizeof(volta));
 		fseek(f, 0, SEEK_SET);
 		while(!feof(f)) {
-			if(fread((pVolta+i), sizeof(struct Volta), 1, f) == 1) {
+			if(fread((pVolta+i), sizeof(volta), 1, f) == 1) {
 				i++;
 			} else {
 				break;
 			}
 		}
 	}
+	
+	return pVolta;
 }
+
+
 
 
 
