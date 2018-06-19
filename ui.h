@@ -9,6 +9,7 @@
 #define VED printf("\xBA\n");
 #define CIE printf("\xC8");
 #define CID printf("\xBC\n");
+#define LINHA printf("\n=========================================\n");
 
 void cabecalho(char texto[TAM_TEXTO]);
 #endif

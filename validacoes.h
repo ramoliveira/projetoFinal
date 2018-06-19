@@ -18,6 +18,7 @@ void leValidaChar(char *pChar, char X, char Y, char titulo[30]);
 void leValidaInt(int *pValor,int valorMin, int valorMax, char texto[]);
 void leValidaData(char *data, char *texto);
 void leValidaSiglas(char texto[], char *sigla);
+void leValidaTempo(int *minutos, int *segundos, float *milissegundos, char *texto);
 
 //Objetivo: lê e validar valores reais
 //Parâmetros:  ponteiro de valores mínimos e máximos
@@ -265,6 +266,35 @@ void leValidaSigla(char texto[], char *sigla) {
 					flag = 1;
 				}
 			}
+		}
+	} while(!flag);
+	
+	for (i = 0; i < strlen(sigla); i++) {
+		sigla[i] = toupper(sigla[i]);
+	}
+}
+
+void leValidaTempo(int *minutos, int *segundos, float *milissegundos, char *texto) {
+	int flag = 1;
+	
+	do {
+		printf(texto);
+		fflush(stdin);
+		flag = scanf("%d:%d:%f", minutos, segundos, milissegundos);
+		if (flag < 3) {
+			printf("Numero(s) invalido! Digite o(s) numero(s) de acordo com o pedido!\n");
+			flag = 0;
+		} else if (*minutos > 60 || *minutos < 0) {
+			printf("Minuto(s) invalido! Digite no intervalo de 0 a 60 minutos.\n");
+			flag = 0;
+		} else if (*segundos > 60 || *segundos < 0) {
+			printf("Segundo(s) invalido! Digite no intervalo de 0 a 60 segundos.\n");
+			flag = 0;
+		} else if (*milissegundos > 1000 || *milissegundos < 0) {
+			printf("Milissegundo(s) invalido! Digite no intervalo de 0 a 1000 milissegundos.\n");
+			flag = 0;
+		} else {
+			flag = 1;
 		}
 	} while(!flag);
 }

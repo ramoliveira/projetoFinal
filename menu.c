@@ -322,7 +322,7 @@ Saída: Nenhuma.
 void chamaFuncoesMenuCircuito(char *opcao) {
 	switch(*opcao) {
 		case '1':
-			//inclusaoCircuitos();
+			inclusaoCircuitos();
 			break;
 		case '2':
 			//alterarCircuitos();
@@ -341,7 +341,7 @@ Saída: Nenhuma.
 void chamaFuncoesMenuVolta(char *opcao) {
 	switch(*opcao) {
 		case '1':
-			//inclusaoVoltas();
+			inclusaoVoltas();
 			break;
 		case '2':
 			//alterarVoltas();
