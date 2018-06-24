@@ -1,4 +1,4 @@
-//Funções relacionadas aos menus
+/* Menus */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -179,6 +179,10 @@ void apresentaEscolheMenuRelatorio(char *opcao) {
 	} while(!flag);
 }
 
+/*Objetivo: Apresentar e realizar a escolha do menu de relatórios do tipo 1
+Entrada: Ponteiro da opção escolhida.
+Saída: Nenhuma*/
+
 void apresentaEscolheMenuRelatorios1(char *opcao) {
 	int flag = 1;
 	
@@ -201,6 +205,10 @@ void apresentaEscolheMenuRelatorios1(char *opcao) {
 		}
 	} while(!flag);
 }
+
+/*Objetivo: Apresentar e realizar a escolha de repetições.
+Entrada: Ponteiro da opção escolhida.
+Saída: Nenhuma.*/
 
 void apresentaEscolheMenuRepete(char *opcao) {
 	int flag = 1;
@@ -284,10 +292,10 @@ void chamaFuncoesMenuPiloto(char *opcao) {
 			inclusaoPilotos();
 			break;
 		case '2':
-			//alterarPilotos();
+			alterarPilotos();
 			break;
 		case '3':
-			//excluirPilotos();
+			excluirPilotos();
 			break;
 		default:
 			return;
@@ -306,7 +314,7 @@ void chamaFuncoesMenuEquipe(char *opcao) {
 			inclusaoEquipes();
 			break;
 		case '2':
-			//excluirEquipes();
+			excluirEquipes();
 			break;
 		default:
 			return;
@@ -325,7 +333,7 @@ void chamaFuncoesMenuCircuito(char *opcao) {
 			inclusaoCircuitos();
 			break;
 		case '2':
-			//alterarCircuitos();
+			alterarCircuitos();
 			break;
 		default:
 			return;
@@ -344,10 +352,10 @@ void chamaFuncoesMenuVolta(char *opcao) {
 			inclusaoVoltas();
 			break;
 		case '2':
-			//alterarVoltas();
+			alterarVoltas();
 			break;
 		case '3':
-			//exclusaoVoltas();
+			excluirVoltas();
 			break;
 		default:
 			return;
@@ -386,6 +394,10 @@ void chamaFuncoesMenuRelatorio(char *opcao) {
 			return;
 	}
 }
+
+/*Objetivo: Chamar as funções do menu de relatórios do tipo 1
+Entrada: Ponteiro da opção escolhida.
+Saída: Nenhuma.*/
 
 void chamaFuncoesMenuRelatorios1(char *opcao) {
 	switch(*opcao) {

@@ -1,4 +1,4 @@
-/*Gerenciamento e controle dos dados cadastrais - Tópico 2.1*/
+/* Gerenciamento e controle dos dados cadastrais */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,21 +11,17 @@
 #include "storage.h"
 
 /******PILOTOS*******/
-/*Objetivo: incluir um piloto 
-Parâmetros:
+/* Objetivo: incluir um piloto 
+Par�metros: Nenhum
 Retorno: nenhum */
 
-void inclusaoPilotos(){
-	
-	/*Fazer a chamada da função de cadastramento de pilotos*/
-	/*Utilizar pesquisa binária para identificar repetição de código de piloto*/
-	
-	FILE *f, *p, *q;
+void inclusaoPilotos(){	
+	FILE *f = NULL, *p = NULL, *q = NULL;
 	char opcao = '\0';
-	int qtdEquipCad, qtdPilotCad, qtdPaisCad, flag, numeros[QTD_NUM], opcaoId, opcaoEquipe, opcaoPais, i;
-	equipe *pEquip;
-	pais *pPais;
-	piloto *pPiloto, pilotoCadastro;
+	int qtdEquipCad = 0, qtdPilotCad = 0, qtdPaisCad = 0, flag, numeros[QTD_NUM] = {0}, opcaoId = 0, opcaoEquipe = 0, opcaoPais = 0, i = 0;
+	equipe *pEquip = NULL;
+	pais *pPais = NULL;
+	piloto *pPiloto = NULL, pilotoCadastro;
 	
 	if (!existeArquivo("pilotos.dat", "rb")) {
 		criaArquivo("pilotos.dat", "wb+");
@@ -53,10 +49,20 @@ void inclusaoPilotos(){
 		qtdEquipCad = 0;
 		qtdPilotCad = 0;
 		qtdPaisCad = 0;
+		
 		pEquip = coletaDadosEquipe(&qtdEquipCad, q);
 		pPiloto = coletaDadosPiloto(&qtdPilotCad, f);
 		pPais = coletaDadosPais(&qtdPaisCad, p);
+		
 		system("cls");
+		cabecalho("Cadastro de Piloto");
+		if (qtdEquipCad == 0) {
+			ERRO_EQUIPES
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
 		strcpy(pilotoCadastro.nome, "");
 		strcpy(pilotoCadastro.dataNascimento, "");
 		strcpy(pilotoCadastro.equipePiloto.nome, "");
@@ -67,7 +73,6 @@ void inclusaoPilotos(){
 		strcpy(pilotoCadastro.paisPiloto.sigla, "");
 		pilotoCadastro.sexo = '\0';
 		pilotoCadastro.id = -1;
-		cabecalho("Cadastro de Piloto");
 		
 		do {
 			leValidaNome("Digite o nome do piloto: ", pilotoCadastro.nome);
@@ -84,8 +89,13 @@ void inclusaoPilotos(){
 				}
 			}
 		} while(!flag);
+		
+		LINHA
 
-		leValidaData(pilotoCadastro.dataNascimento, "Digite a data de nascimento do piloto: ");
+		leValidaData(pilotoCadastro.dataNascimento, "Digite a data de nascimento do piloto [dd/mm/aaaa]: ");
+		
+		LINHA
+		
 		leValidaChar(&pilotoCadastro.sexo, 'm', 'f', "Digite o sexo do piloto [m/f]: ");
 		
 		LINHA
@@ -109,23 +119,20 @@ void inclusaoPilotos(){
 			pilotoCadastro.paisPiloto = pPais[opcaoPais-1];
 		} else {
 			ERRO_DB_PAIS_VAZIO
+			exit(EXIT_FAILURE);
 		}
 		
 		LINHA
 		
-		if (qtdEquipCad != 0) {
-			printf("Escolha a equipe do piloto:\n");
-			for (i = 0; i < qtdEquipCad; i++) {
-				printf("(%2d) - Sigla: %3s Nome: %-15s\n", i+1, pEquip[i].sigla, pEquip[i].nome);
-			}
-			leValidaInt(&opcaoEquipe, 1, i+1, "Digite de acordo com o indice: ");
-			pilotoCadastro.equipePiloto = pEquip[opcaoEquipe-1];
-		} else {
-			ERRO_DB_EQUIPE_VAZIO
+		printf("Escolha a equipe do piloto:\n");
+		for (i = 0; i < qtdEquipCad; i++) {
+			printf("(%2d) - Sigla: %3s Nome: %-15s\n", i+1, pEquip[i].sigla, pEquip[i].nome);
 		}
+		leValidaInt(&opcaoEquipe, 1, i+1, "Digite de acordo com o indice: ");
+		pilotoCadastro.equipePiloto = pEquip[opcaoEquipe-1];
 		
 		fwrite(&pilotoCadastro, sizeof(piloto), 1, f);
-		
+
 		apresentaEscolheMenuRepete(&opcao);
 		if (qtdPaisCad != 0) {
 			free(pPais);
@@ -137,48 +144,307 @@ void inclusaoPilotos(){
 			free(pPiloto);
 		}
 	} while(opcao == 's');
+	
 	fclose(f);
 	fclose(p);
 	fclose(q);
 }
 
-/*Objetivo: alterar um piloto que usuário desejar
-Parâmetros: ponteiro da estrutura piloto e ponteiro da quantidade de pilotos
+/* Objetivo: alterar um piloto cadastrado
+Par�metros: nenhum
 Retorno: nenhum */
 
-void alterarPilotos(piloto *dadosPilotos, int *qtdPilotos){
+void alterarPilotos(){
+	FILE *a = NULL, *b = NULL, *c = NULL, *d = NULL;
+	char opcao = '\0', continuar = '\0';
+	int flag, qtdPilotos, qtdPaises, qtdEquipes, i, alteraPiloto, numeros[QTD_NUM] = {0}, opcaoId, opcaoEquipe, opcaoPais;
+	piloto *pPiloto = NULL;
+	pais *pPais = NULL;
+	equipe *pEquipe = NULL;
 	
-	/*Fazer a chamada da função de apresenta pilotos para a escolha por meio do código*/	
-	
+	do {
+		qtdPilotos = 0;
+		qtdPaises = 0;
+		qtdEquipes = 0;
+		
+		if (!existeArquivo("pilotos.dat", "rb")) {
+			criaArquivo("pilotos.dat", "wb+");
+		}
+		if ((a = fopen("pilotos.dat", "rb+")) == NULL) {
+			ERRO_DB_PILOTO
+			exit(EXIT_FAILURE);
+		}
+		if (!existeArquivo("paises.txt", "rt")) {
+			criaArquivo("paises.txt", "wt+");
+		}
+		if ((b = fopen("paises.txt", "rt+")) == NULL) {
+			ERRO_DB_PAIS
+			exit(EXIT_FAILURE);
+		}
+		if (!existeArquivo("equipes.dat", "rb")) {
+			criaArquivo("equipes.dat", "wb+");
+		}
+		if ((c = fopen("equipes.dat", "rb+")) == NULL) {
+			ERRO_DB_EQUIP
+			exit(EXIT_FAILURE);
+		}
+		
+		pPiloto = coletaDadosPiloto(&qtdPilotos, a);
+		pPais = coletaDadosPais(&qtdPaises, b);
+		pEquipe = coletaDadosEquipe(&qtdEquipes, c);
+		
+		fclose(a);
+		fclose(b);
+		fclose(c);
+		
+		system("cls");
+		cabecalho("ALTERACAO DE PILOTOS");
+		if (qtdPilotos == 0) {
+			ERRO_PILOTOS
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		if (qtdEquipes == 0) {
+			ERRO_EQUIPES
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		printf("Escolha um piloto para alterar:\n");
+		for (i = 0; i < qtdPilotos; i++) {
+			printf("(%2d) - Nome: %-15s ID: %3d Equipe: %-3s\n", i+1, pPiloto[i].nome, pPiloto[i].id, pPiloto[i].equipePiloto.sigla);
+		}
+		leValidaInt(&alteraPiloto, 1, i+1, "Digite sua escolha abaixo:\n");
+		
+		LINHA
+		
+		pPiloto[alteraPiloto-1].id = -1;
+		
+		do {
+			leValidaNome("Digite o novo nome do piloto: ", pPiloto[alteraPiloto-1].nome);
+			for (i = 0; i < qtdPilotos; i++) {
+				if (stricmp(pPiloto[alteraPiloto-1].nome, pPiloto[i].nome) == 0 && (alteraPiloto-1) != i) {
+					ERRO_CAD_PILOT
+					getch();
+					flag = 0;
+					break;
+				} else {
+					flag = 1;
+				}
+			}						
+		} while(!flag);
+		
+		LINHA
+		
+		leValidaData(pPiloto[alteraPiloto-1].dataNascimento, "Digite a data de nascimento do piloto [dd/mm/aaaa]: ");
+		
+		LINHA
+		
+		leValidaChar(&(pPiloto[alteraPiloto-1].sexo), 'm', 'f', "Digite o sexo do piloto [m/f]: ");
+		
+		LINHA
+		
+		geraNumerosPiloto(numeros, pPiloto, &qtdPilotos);
+		printf("Escolha um ID para o piloto dos numeros abaixo:\n");
+		for (i = 0; i < QTD_NUM; i++) {
+			printf("(%2d) - %3d\n", i+1, numeros[i]);
+		}
+		leValidaInt(&opcaoId, 1, i+1, "Digite de acordo com o indice: ");
+		pPiloto[alteraPiloto-1].id = numeros[opcaoId-1];
+		
+		LINHA
+		
+		if (qtdPaises != 0) {
+			printf("Escolha o pais do piloto:\n");
+			for (i = 0; i < qtdPaises; i++) {
+				printf("(%2d) - Pais: %-15s Sigla: %3s\n", i+1, pPais[i].nome, pPais[i].sigla);
+			}
+			leValidaInt(&opcaoPais, 1, i+1, "Digite de acordo com o indice: ");
+			pPiloto[alteraPiloto-1].paisPiloto = pPais[opcaoPais-1];
+		} else {
+			ERRO_DB_PAIS_VAZIO
+			exit(EXIT_FAILURE);
+		}
+		
+		LINHA
+		
+		printf("Escolha a equipe do piloto:\n");
+		for (i = 0; i < qtdEquipes; i++) {
+			printf("(%2d) - Sigla: %3s Nome: %-15s\n", i+1, pEquipe[i].sigla, pEquipe[i].nome);
+		}
+		leValidaInt(&opcaoEquipe, 1, i+1, "Digite de acordo com o indice: ");
+		pPiloto[alteraPiloto-1].equipePiloto = pEquipe[opcaoEquipe-1];
+		
+		criaArquivo("auxiliar.dat", "wb");
+		if ((d = fopen("auxiliar.dat", "rb+")) == NULL) {
+			ERRO_AUXILIAR
+			exit(EXIT_FAILURE);
+		}
+		for (i = 0; i < qtdPilotos; i++) {
+			fwrite((pPiloto+i), sizeof(piloto), 1, d);
+		}
+		fclose(d);
+		remove("pilotos.dat");
+		rename("auxiliar.dat", "pilotos.dat");
+		
+		apresentaEscolheMenuRepete(&opcao);
+		if (qtdPilotos != 0) {
+			free(pPiloto);
+		}
+		if (qtdEquipes != 0) {
+			free(pEquipe);
+		}
+		if (qtdPaises != 0) {
+			free(pPais);
+		}
+	} while(opcao == 's');
 }
 
-/*Objetivo: excluir um piloto que usuário desejar
-Parâmetros: ponteiro da estrutura piloto e ponteiro da quantidade de pilotos
+/* Objetivo: excluir um piloto cadastrado
+Par�metros: nenhum 
 Retorno: nenhum */
 
 
-void excluirPilotos(piloto *dadosPilotos, int *qtdPilotos){
-		
-	/*Fazer a chamada da função de apresenta pilotos para a escolha por meio do código*/
+void excluirPilotos(){	
+	FILE *a = NULL, *b = NULL, *c = NULL;
+	int qtdPilotos = 0, qtdVoltas = 0, i, j, cont1, cont2, excluiPiloto;
+	char opcao = '\0', continuar = '\0';
+	piloto *pPiloto = NULL;
+	volta *pVolta = NULL;
 	
+	
+	do {
+		qtdPilotos = 0;
+		qtdVoltas = 0;
+		cont1 = 0;
+		cont2 = 0;
+		if (!existeArquivo("pilotos.dat", "rb")) {
+			criaArquivo("pilotos.dat", "wb+");
+		}
+		if ((a = fopen("pilotos.dat", "rb+")) == NULL) {
+			ERRO_DB_PILOTO
+			exit(EXIT_FAILURE);
+		}
+		if (!existeArquivo("voltas.dat", "rb")) {
+			criaArquivo("voltas.dat", "wb+");
+		}
+		if ((b = fopen("voltas.dat", "rb+")) == NULL) {
+			ERRO_DB_EQUIP
+			exit(EXIT_FAILURE);
+		}
+		
+		system("cls");
+		cabecalho("EXCLUSAO DE PILOTOS");
+		pPiloto = coletaDadosPiloto(&qtdPilotos, a);
+		pVolta = coletaDadosVolta(&qtdVoltas, b);
+		fclose(a);
+		fclose(b);
+		
+		if (qtdPilotos == 0) {
+			ERRO_PILOTOS
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		int pilotosValidos[qtdPilotos], apareceu;
+		for (i = 0; i < qtdPilotos; i++) {
+			pilotosValidos[i] = -1;
+		}
+		
+		for (i = 0; i < qtdPilotos; i++) {
+			apareceu = 0;
+			for (j = 0; j < qtdVoltas; j++) {
+				if (pPiloto[i].id == pVolta[j].piloto) {
+					apareceu = 1;
+					break;
+				} 
+			}
+			if (!apareceu) {
+				pilotosValidos[cont2++] = i;
+			}
+		}	
+		
+		for (i = 0; i < qtdPilotos; i++) {
+			if (pilotosValidos[i] != -1) {
+				cont1++;
+			}
+		}
+		
+		if (cont1 == 0) {
+			ERRO_EXCLUIR_PILOTO
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		cont2 = 0;
+		printf("Escolha o piloto a ser excluido:\n");
+		for (i = 0; i < qtdPilotos; i++) {
+			if (i == pilotosValidos[i]) {
+				printf("(%2d) - Nome: %-15s ID: %3d\n", ++cont2, pPiloto[i].nome, pPiloto[i].id);
+			}
+		}
+		leValidaInt(&excluiPiloto, 1, cont2, "Digite sua opcao abaixo:\n");
+		leValidaChar(&continuar, 's', 'n', "Deseja mesmo excluir este piloto? [s/n]\n");
+		
+		if (continuar == 'N') {
+			printf("Voce sera mandado de volta ao menu.\n");
+			printf("Aperte ENTER para volta.\n");
+			getch();
+			return;
+		}
+		
+		for (i = 0; i < qtdPilotos; i++) {
+			if (excluiPiloto-1 == i) {
+				excluiPiloto = pilotosValidos[i];
+				break;
+			}
+		}
+		
+		criaArquivo("auxiliar.dat", "wb");
+		if ((c = fopen("auxiliar.dat", "rb+")) == NULL) {
+			ERRO_AUXILIAR
+			exit(EXIT_FAILURE);
+		}
+		for (i = 0; i < qtdPilotos; i++) {
+			if (i != excluiPiloto) {
+				fwrite((pPiloto+i), sizeof(piloto), 1, c);
+			}
+		}
+		fclose(c);
+		free(pPiloto);
+		free(pVolta);
+		remove("pilotos.dat");
+		rename("auxiliar.dat", "pilotos.dat");
+		
+		qtdPilotos--;
+		if (qtdPilotos == 0) {
+			ERRO_EXCLUIR_PILOTO
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		apresentaEscolheMenuRepete(&opcao);
+	} while(opcao == 's');
 }
 
 /******EQUIPES******/
-/*Objetivo: incluir uma equipe 
-Parâmetros: 
+/* Objetivo: incluir uma equipe 
+Par�metros: nenhum
 Retorno: nenhum */
 
 void inclusaoEquipes(){
-	
-	/*Fazer a chamada da função de cadastramento de equipes*/
-	/*Utilizar pesquisa binária para identificar repetição de código de equipe*/
-	
-	FILE *f, *p;
-	int qtdEquipCad, qtdPaisCad, i = 0, flag;
+	FILE *f = NULL, *p = NULL;
+	int qtdEquipCad = 0, qtdPaisCad = 0, i = 0, flag = 1;
 	char opcao = '\0';
-	int opcaoPais = -1;
-	equipe equipeCadastro, *pEquipe;
-	pais *pPais;
+	int opcaoPais = 0;
+	equipe equipeCadastro, *pEquipe = NULL;
+	pais *pPais = NULL;
 	
 	if (!existeArquivo("equipes.dat", "rb")) {
 		criaArquivo("equipes.dat", "wb+");
@@ -198,32 +464,41 @@ void inclusaoEquipes(){
 	do {
 		qtdEquipCad = 0;
 		qtdPaisCad = 0;
+		
 		pEquipe = coletaDadosEquipe(&qtdEquipCad, f);
 		pPais = coletaDadosPais(&qtdPaisCad, p);
+		
 		do {
+			flag = 1;
 			system("cls");
+			cabecalho("CADASTRO DE EQUIPES");
+			
 			strcpy(equipeCadastro.nome, "");
 			strcpy(equipeCadastro.paisEquipe.nome, "");
 			strcpy(equipeCadastro.paisEquipe.sigla, "");
 			strcpy(equipeCadastro.sigla, "");
-			flag = 1;
 			
-			cabecalho("Cadastro de Equipe");
 			leValidaNome("Digite o nome da equipe: ", equipeCadastro.nome);
+			
+			LINHA
+			
 			leValidaSigla("Digite a sigla da equipe [SSS]: ", equipeCadastro.sigla);
+			
+			LINHA
 			
 			if (qtdPaisCad != 0) {
 				printf("Escolha um pais para a equipe:\n");
 				for (i = 0; i < qtdPaisCad; i++) {
-					printf("(%d) - [%s] %s\n", i+1, pPais[i].sigla, pPais[i].nome);
+					printf("(%2d) - [%s] %s\n", i+1, pPais[i].sigla, pPais[i].nome);
 				}
 				leValidaInt(&opcaoPais, 1, i+1, "Digite o pais escolhido:\n");
 				equipeCadastro.paisEquipe = pPais[opcaoPais-1];
 			} else {
 				ERRO_DB_PAIS_VAZIO
-				leValidaSigla("Digite a sigla do pais da equipe [SSS]: ", equipeCadastro.paisEquipe.sigla);
-				leValidaNome("Digite o nome do pais da equipe: ", equipeCadastro.paisEquipe.nome);
+				exit(EXIT_FAILURE);
 			}
+			
+			LINHA
 			
 			if (qtdEquipCad != 0) {
 				for (i = 0; i < qtdEquipCad; i++) {
@@ -242,7 +517,6 @@ void inclusaoEquipes(){
 				fseek(f, 0, SEEK_END);
 				fwrite(&equipeCadastro, sizeof(equipe), 1, f);
 			}
-			
 		} while(!flag);
 		
 		apresentaEscolheMenuRepete(&opcao);
@@ -257,31 +531,148 @@ void inclusaoEquipes(){
 	fclose(f);
 }
 
-/*Objetivo: excluir uma equipe que usuário desejar
-Parâmetros: ponteiro da estrutura equipe e ponteiro da quantidade de equipes
+/* Objetivo: excluir uma equipe
+Par�metros: nenhum
 Retorno: nenhum */
 
-void excluirEquipes(equipe *dadosEquipes, int *qtdEquipes){
-		
-	/*Fazer a chamada da função de apresenta equipes para a escolha por meio da sigla*/
+void excluirEquipes(){
+	FILE *a = NULL, *b = NULL, *c = NULL;
+	int qtdEquipes = 0, qtdPilotos = 0, i = 0, j = 0, cont1, cont2, excluiEquipe;
+	char opcao = '\0', continuar = '\0';
+	piloto *pPiloto = NULL;
+	equipe *pEquipe = NULL;
 	
+	do {
+		qtdPilotos = 0;
+		qtdEquipes = 0;
+		cont1 = 0; 
+		cont2 = 0;
+		
+		if (!existeArquivo("pilotos.dat", "rb")) {
+			criaArquivo("pilotos.dat", "wb");
+		}
+		if ((a = fopen("pilotos.dat", "rb+")) == NULL) {
+			ERRO_DB_PILOTO
+			exit(EXIT_FAILURE);
+		}
+		if (!existeArquivo("equipes.dat", "rb")) {
+			criaArquivo("equipes.dat", "wb");
+		}
+		if ((b = fopen("equipes.dat", "rb+")) == NULL) {
+			ERRO_DB_EQUIP
+			exit(EXIT_FAILURE);
+		}
+		
+		system("cls");
+		cabecalho("EXCLUSAO DE EQUIPES");
+		pPiloto = coletaDadosPiloto(&qtdPilotos, a);
+		pEquipe = coletaDadosEquipe(&qtdEquipes, b);
+		
+		fclose(a);
+		fclose(b);
+		
+		if (qtdEquipes == 0) {
+			ERRO_EQUIPES
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		int equipesValidas[qtdEquipes], apareceu;
+		for (i = 0; i < qtdEquipes; i++) {
+			equipesValidas[i] = -1;
+		}
+		
+		for (i = 0; i < qtdEquipes; i++) {
+			apareceu = 0;
+			for (j = 0; j < qtdPilotos; j++) {
+				if (stricmp(pEquipe[i].sigla, pPiloto[j].equipePiloto.sigla) == 0) {
+					apareceu = 1;
+					break;
+				}
+			}
+			if (!apareceu) {
+				equipesValidas[cont2++] = i;
+			}
+		}	
+		
+		for (i = 0; i < qtdEquipes; i++) {
+			if (equipesValidas[i] != -1) {
+				cont1++;
+			}
+		}
+		
+		if (cont1 == 0) {
+			ERRO_EXCLUIR_EQUIPE
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+				
+		cont2 = 0;
+		printf("Escolha a equipe a ser excluida:\n");
+		for (i = 0; i < qtdEquipes; i++) {
+			if (i == equipesValidas[i]) {
+				printf("(%2d) - Nome: %-15s Sigla: %-3s\n", ++cont2, pEquipe[i].nome, pEquipe[i].sigla);
+			}
+		}
+		leValidaInt(&excluiEquipe, 1, cont2, "Digite sua opcao abaixo:\n");
+		leValidaChar(&continuar, 's', 'n', "Deseja mesmo excluir esta equipe? [s/n]\n");
+		
+		if (continuar == 'N') {
+			printf("Voce sera mandado de volta ao menu.\n");
+			printf("Aperte ENTER para volta.\n");
+			getch();
+			return;
+		}
+		
+		for (i = 0; i < qtdEquipes; i++) {
+			if (excluiEquipe-1 == i) {
+				excluiEquipe = equipesValidas[i];
+				break;
+			}
+		}
+		
+		criaArquivo("auxiliar.dat", "wb");
+		if ((c = fopen("auxiliar.dat", "rb+")) == NULL) {
+			ERRO_AUXILIAR
+			exit(EXIT_FAILURE);
+		}
+		for (i = 0; i < qtdEquipes; i++) {
+			if (i != excluiEquipe) {
+				fwrite((pEquipe+i), sizeof(equipe), 1, c);
+			}
+		}
+		fclose(c);
+		free(pEquipe);
+		free(pPiloto);
+		remove("equipes.dat");
+		rename("auxiliar.dat", "equipes.dat");
+		
+		qtdEquipes--;
+		if (qtdEquipes == 0) {
+			ERRO_EXCLUIR_EQUIPE
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		apresentaEscolheMenuRepete(&opcao);
+	} while(opcao == 's');
 }
 
 /******CIRCUITOS*******/
-/*Objetivo: inclusão de um circuito 
-Parâmetros: ponteiro da estrutura circuito e ponteiro da quantidade de circuitos
+/* Objetivo: incluir um circuito 
+Parâmetros: nenhum
 Retorno: nenhum */
 
 void inclusaoCircuitos(){
-	
-	/*Fazer a chamada da função de cadastramento de circuitos*/
-	/*Utilizar pesquisa binária para identificar repetição de código de circuito*/
-	FILE *a, *b, *c;
+	FILE *a = NULL, *b = NULL, *c = NULL;
 	char opcao = '\0';
-	int flag, qtdPilotoCad, qtdPaisCad, qtdCircuitCad, opcaoPais, i;
-	piloto *pPiloto;
-	pais *pPais;
-	circuito *pCircuito, circuitoCadastro;
+	int flag = 1, qtdPilotoCad = 0, qtdPaisCad = 0, qtdCircuitCad = 0, opcaoPais = 0, opcaoPiloto = 0, i = 0;
+	piloto *pPiloto = NULL;
+	pais *pPais = NULL;
+	circuito *pCircuito = NULL, circuitoCadastro;
 	
 	if (!existeArquivo("pilotos.dat", "rb")) {
 		criaArquivo("pilotos.dat", "wb+");
@@ -307,11 +698,22 @@ void inclusaoCircuitos(){
 	
 	do {
 		flag = 1;
+		qtdPilotoCad = 0;
+		qtdPaisCad = 0;
+		qtdCircuitCad = 0;
 		pPiloto = coletaDadosPiloto(&qtdPilotoCad, a);
 		pPais = coletaDadosPais(&qtdPaisCad, b);
 		pCircuito = coletaDadosCircuito(&qtdCircuitCad, c);
 		
 		system("cls");
+		cabecalho("CADASTRO DE CIRCUITOS");
+		if (qtdPilotoCad == 0) {
+			ERRO_PILOTOS
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
 		strcpy(circuitoCadastro.nome, "");
 		strcpy(circuitoCadastro.pilotoMenorTempo, "");
 		circuitoCadastro.id = -1;
@@ -322,22 +724,38 @@ void inclusaoCircuitos(){
 		circuitoCadastro.menorTempo.segundos = -1;
 		circuitoCadastro.menorTempo.milisegundos = -1;
 		
-		cabecalho("Cadastro de Circuitos");
 		circuitoCadastro.id = qtdCircuitCad + 1;
-		leValidaNome("Digite o nome do circuito: ", circuitoCadastro.nome);
+		
+		do {
+			leValidaNome("Digite o nome do circuito: ", circuitoCadastro.nome);
+			for (i = 0; i < qtdCircuitCad; i++) {
+				if (stricmp(circuitoCadastro.nome, pCircuito[i].nome) == 0) {
+					printf("Circuito invalido! Este circuito ja esta cadastrado.\n");
+					flag = 0;
+					break;
+				} else {
+					flag = 1;
+				}
+			}
+		} while(!flag);
 		
 		LINHA
 		
-		printf("Escolha o pais do circuito:\n");
-		for (i = 0; i < qtdPaisCad; i++) {
-			printf("(%2d) - Pais: %-15s Sigla: %3s\n", i+1, pPais[i].nome, pPais[i].sigla);
+		if (qtdPaisCad != 0) {
+			printf("Escolha o pais do circuito:\n");
+			for (i = 0; i < qtdPaisCad; i++) {
+				printf("(%2d) - Pais: %-15s Sigla: %3s\n", i+1, pPais[i].nome, pPais[i].sigla);
+			}
+			leValidaInt(&opcaoPais, 1, i+1, "Digite de acordo com o indice: ");
+			circuitoCadastro.paisCircuito = pPais[opcaoPais-1];
+		} else {
+			ERRO_DB_PAIS_VAZIO
+			exit(EXIT_FAILURE);
 		}
-		leValidaInt(&opcaoPais, 1, i+1, "Digite de acordo com o indice: ");
-		circuitoCadastro.paisCircuito = pPais[opcaoPais-1];
 		
 		LINHA
 		
-		leValidaFloat(&circuitoCadastro.quilometros, 3000, 29000, "Digite o tamanho do circuito: ");
+		leValidaFloat(&circuitoCadastro.quilometros, 3000, 29000, "Digite o tamanho do circuito (em Km): ");
 		
 		LINHA
 		
@@ -345,11 +763,12 @@ void inclusaoCircuitos(){
 		
 		LINHA
 		
-		leValidaNome("Digite o nome do piloto com menor tempo no circuito: ", circuitoCadastro.pilotoMenorTempo);
 		printf("Escolha o piloto com o menor tempo no circuito:\n");
 		for (i = 0; i < qtdPilotoCad; i++) {
-			printf("(%2d) - Piloto: %-15s Equipe %s");
+			printf("(%2d) - Piloto: %-15s Equipe %s\n", i+1, pPiloto[i].nome, pPiloto[i].equipePiloto);
 		}
+		leValidaInt(&opcaoPiloto, 1, i+1, "Digite sua opcao abaixo: ");
+		strcpy(circuitoCadastro.pilotoMenorTempo, pPiloto[opcaoPiloto-1].nome);
 		
 		fwrite(&circuitoCadastro, sizeof(circuito), 1, c);
 		
@@ -369,57 +788,200 @@ void inclusaoCircuitos(){
 	fclose(c);
 }
 
-/*Objetivo: alterar um circuito que usuário desejar
-Parâmetros: ponteiro da estrutura circuito e ponteiro da quantidade de circuitos
-Retorno: nenhum*/
+/* Objetivo: alterar um circuito
+Par�metros: nenhum
+Retorno: nenhum */
 
-void alterarCircuitos(circuito *dadosCircuito, int *qtdCircuitos){
-	
-	/*Fazer a chamada da função de apresenta circuitos para a escolha por meio do código*/	
-	
+void alterarCircuitos(){
+	FILE *a = NULL, *b = NULL, *c = NULL, *d = NULL;
+	char opcao = '\0';
+	int qtdPilotos, qtdPaises, qtdCircuitos, i, alteraCircuito, opcaoPais, opcaoPiloto, flag;
+	piloto *pPiloto = NULL;
+	pais *pPais = NULL;
+	circuito *pCircuito = NULL;
+		
+	do {
+		qtdPilotos = 0;
+		qtdPaises = 0;
+		qtdCircuitos = 0;
+		
+		if (!existeArquivo("pilotos.dat", "rb")) {
+		criaArquivo("pilotos.dat", "wb+");
+		}
+		if ((a = fopen("pilotos.dat", "rb+")) == NULL) {
+			ERRO_DB_PILOTO
+			exit(EXIT_FAILURE);
+		}
+		if (!existeArquivo("paises.txt", "rt")) {
+			criaArquivo("paises.txt", "wt+");
+		}
+		if ((b = fopen("paises.txt", "rt+")) == NULL) {
+			ERRO_DB_PAIS
+			exit(EXIT_FAILURE);
+		}
+		if (!existeArquivo("circuitos.dat", "rb")) {
+			criaArquivo("circuitos.dat", "wb+");
+		}
+		if ((c = fopen("circuitos.dat", "rb+")) == NULL) {
+			ERRO_DB_CIRCUITO
+			exit(EXIT_FAILURE);
+		}
+		
+		pPiloto = coletaDadosPiloto(&qtdPilotos, a);
+		pPais = coletaDadosPais(&qtdPaises, b);
+		pCircuito = coletaDadosCircuito(&qtdCircuitos, c);
+		
+		fclose(a);
+		fclose(b);
+		fclose(c);
+		
+		system("cls");
+		cabecalho("ALTERACAO DE CIRCUITOS");
+		if (qtdCircuitos == 0) {
+			ERRO_CIRCUITOS
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		printf("Escolha o circuito a ser alterado:\n");
+		for (i = 0; i < qtdCircuitos; i++) {
+			printf("(%2d) - Nome: %-15s ID: %3d Pais: %-3s\n", i+1, pCircuito[i].nome, pCircuito[i].id, pCircuito[i].paisCircuito.sigla);
+		}
+		leValidaInt(&alteraCircuito, 1, i+1, "Digite sua escolha abaixo:\n");
+		
+		LINHA
+		
+		do {
+			leValidaNome("Digite o novo nome do circuito: ", pCircuito[alteraCircuito-1].nome);
+			for (i = 0; i < qtdCircuitos; i++) {
+				if (stricmp(pCircuito[alteraCircuito-1].nome, pCircuito[i].nome) == 0 && i != alteraCircuito-1) {
+					printf("Circuito invalido! Este circuito ja esta cadastrado.\n");
+					flag = 0;
+					break;
+				} else {
+					flag = 1;
+				}
+			}
+		} while(!flag);
+		
+		LINHA
+		
+		if (qtdPaises != 0) {
+			printf("Escolha o pais do circuito:\n");
+			for (i = 0; i < qtdPaises; i++) {
+				printf("(%2d) - Pais: %-15s Sigla: %3s\n", i+1, pPais[i].nome, pPais[i].sigla);
+			}
+			leValidaInt(&opcaoPais, 1, i+1, "Digite de acordo com o indice: ");
+			pCircuito[alteraCircuito-1].paisCircuito = pPais[opcaoPais-1];
+		} else {
+			ERRO_DB_PAIS_VAZIO
+			exit(EXIT_FAILURE);
+		}
+		
+		LINHA
+		
+		leValidaFloat(&(pCircuito[alteraCircuito-1].quilometros), 3000, 29000, "Digite o tamanho do circuito (em Km): ");
+		
+		LINHA
+		
+		leValidaTempo(&pCircuito[alteraCircuito-1].menorTempo.minutos, &pCircuito[alteraCircuito-1].menorTempo.segundos, &pCircuito[alteraCircuito-1].menorTempo.milisegundos, "Digite o menor tempo do circuito [min:seg:mili]: ");
+		
+		LINHA
+		
+		printf("Escolha o piloto com o menor tempo no circuito:\n");
+		for (i = 0; i < qtdPilotos; i++) {
+			printf("(%2d) - Piloto: %-15s Equipe %s\n", i+1, pPiloto[i].nome, pPiloto[i].equipePiloto);
+		}
+		leValidaInt(&opcaoPiloto, 1, i+1, "Digite sua opcao abaixo: ");
+		strcpy(pCircuito[alteraCircuito-1].pilotoMenorTempo, pPiloto[opcaoPiloto-1].nome);
+		
+		criaArquivo("auxiliar.dat", "wb");
+		if ((d = fopen("auxiliar.dat", "rb+")) == NULL) {
+			ERRO_AUXILIAR
+			exit(EXIT_FAILURE);
+		}
+		for (i = 0; i < qtdCircuitos; i++) {
+			fwrite((pCircuito+i), sizeof(circuito), 1, d);
+		}
+		fclose(d);
+		remove("circuitos.dat");
+		rename("auxiliar.dat", "circuitos.dat");
+		
+		apresentaEscolheMenuRepete(&opcao);
+		if (qtdPaises != 0) {
+			free(pPais);
+		}
+		if (qtdPilotos != 0) {
+			free(pPiloto);
+		}
+		if (qtdCircuitos != 0) {
+			free(pCircuito);
+		}
+	} while(opcao == 's');
 }
 
 /*****VOLTAS*****/
-/*Objetivo: inclusão de uma volta 
-Parâmetros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
+/* Objetivo: incluir uma volta 
+Par�metros: nenhum
 Retorno: nenhum */
 
 void inclusaoVoltas(){
-	
-	/*Fazer a chamada da função de cadastramento de voltas*/
-	FILE *a, *b, *c;
+	FILE *a, *b, *c, *d;
 	char opcao = '\0';
-	int flag, qtdPilotoCad, qtdCircuitoCad, qtdVoltaCad, i, opcaoPiloto, opcaoCircuito;
-	piloto *pPiloto; circuito *pCircuito; volta *pVolta, voltaCadastro;
+	int flag, qtdPilotoCad = 0, qtdCircuitoCad = 0, qtdVoltaCad = 0, i, opcaoPiloto, opcaoCircuito;
+	float tempoSegundosVolta, melhorVoltaSegundos;
+	piloto *pPiloto = NULL; 
+	circuito *pCircuito = NULL; 
+	volta *pVolta = NULL, voltaCadastro;
 	
 	if (!existeArquivo("pilotos.dat", "rb")) {
 		criaArquivo("pilotos.dat", "wb+");
 	}
 	if ((a = fopen("pilotos.dat", "rb+")) == NULL) {
-		
+		ERRO_DB_PILOTO
+		exit(EXIT_FAILURE);
 	}
 	if (!existeArquivo("circuitos.dat", "rb")) {
 		criaArquivo("circuitos.dat", "wb+");
 	}
 	if ((b = fopen("circuitos.dat", "rb+")) == NULL) {
-		
+		ERRO_DB_CIRCUITO
+		exit(EXIT_FAILURE);
 	}
 	if (!existeArquivo("voltas.dat", "rb")) {
 		criaArquivo("voltas.dat", "wb+");
 	}
 	if ((c = fopen("voltas.dat", "rb+")) == NULL) {
-		
+		ERRO_DB_VOLTAS
+		exit(EXIT_FAILURE);
 	}
 	
 	do {
 		flag = 1;
+		qtdPilotoCad = 0;
+		qtdCircuitoCad = 0;
+		qtdVoltaCad = 0;
 		pPiloto = coletaDadosPiloto(&qtdPilotoCad, a);
 		pCircuito = coletaDadosCircuito(&qtdCircuitoCad, b);
 		pVolta = coletaDadosVolta(&qtdVoltaCad, c);
-		printf("%d", qtdPilotoCad);
-		getch();
 		
 		system("cls");
+		cabecalho("CADASTRO DE VOLTAS");
+		if (qtdCircuitoCad == 0) {
+			ERRO_CIRCUITOS
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		if (qtdPilotoCad == 0) {
+			ERRO_PILOTOS
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
 		voltaCadastro.piloto = -1;
 		voltaCadastro.circuito = -1;
 		strcpy(voltaCadastro.equipePiloto.nome, "");
@@ -431,11 +993,9 @@ void inclusaoVoltas(){
 		voltaCadastro.melhorVolta.segundos = -1;
 		voltaCadastro.melhorVolta.milisegundos = -1;
 		
-		cabecalho("Cadastro de Voltas");
 		printf("Escolha o piloto da volta abaixo:\n");
 		for (i = 0; i < qtdPilotoCad; i++) {
 			printf("(%2d) - ID: %3d Nome: %-15s\n", i+1, pPiloto[i].id, pPiloto[i].nome);
-			getch();
 		}
 		leValidaInt(&opcaoPiloto, 1, i+1, "Digite sua escolha abaixo:\n");
 		voltaCadastro.piloto = pPiloto[opcaoPiloto-1].id;
@@ -457,6 +1017,26 @@ void inclusaoVoltas(){
 		LINHA
 		
 		leValidaTempo(&voltaCadastro.melhorVolta.minutos, &voltaCadastro.melhorVolta.segundos, &voltaCadastro.melhorVolta.milisegundos, "Digite o tempo da volta [min:seg:mili]: ");
+		tempoSegundosVolta = (voltaCadastro.melhorVolta.minutos * 60) + voltaCadastro.melhorVolta.segundos + (voltaCadastro.melhorVolta.milisegundos * 0.001);
+		melhorVoltaSegundos = (pCircuito[opcaoCircuito-1].menorTempo.minutos * 60) + pCircuito[opcaoCircuito-1].menorTempo.segundos + (pCircuito[opcaoCircuito-1].menorTempo.milisegundos * 0.001);
+
+		if (tempoSegundosVolta < melhorVoltaSegundos) {
+			pCircuito[opcaoCircuito-1].menorTempo.minutos = voltaCadastro.melhorVolta.minutos;
+			pCircuito[opcaoCircuito-1].menorTempo.segundos = voltaCadastro.melhorVolta.segundos;
+			pCircuito[opcaoCircuito-1].menorTempo.milisegundos = voltaCadastro.melhorVolta.milisegundos;
+
+			criaArquivo("auxiliar.dat", "wb");
+			if ((d = fopen("auxiliar.dat", "rb+")) == NULL) {
+				ERRO_AUXILIAR
+				exit(EXIT_FAILURE);
+			}
+			for (i = 0; i < qtdCircuitoCad; i++) {
+				fwrite((pCircuito+i), sizeof(circuito), 1, d);
+			}
+			fclose(d);
+			remove("circuitos.dat");
+			rename("auxiliar.dat", "circuitos.dat");
+		}
 		
 		fwrite(&voltaCadastro, sizeof(volta), 1, c);
 		apresentaEscolheMenuRepete(&opcao);
@@ -475,25 +1055,235 @@ void inclusaoVoltas(){
 	fclose(c);
 }
 
-/*Objetivo: alterar dados de uma volta que usuário desejar
-Parâmetros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
+/* Objetivo: alterar uma volta
+Par�metros: nenhum
 Retorno: nenhum */
 
-void alterarVoltas(volta *dadosVoltas, int *qtdVoltas){
+void alterarVoltas(){
+	FILE *a, *b, *c, *d, *e;
+	char opcao = '\0';
+	int qtdPilotos, qtdCircuitos, qtdVoltas, i, alteraVolta, opcaoPiloto, opcaoCircuito;
+	float tempoSegundosVolta, melhorVoltaSegundos;
+	piloto *pPiloto;
+	circuito *pCircuito;
+	volta *pVolta;
 	
-	/*Fazer a chamada da função de apresenta voltas para a escolha*/
-	
+	do {
+		qtdPilotos = 0;
+		qtdCircuitos = 0;
+		qtdVoltas = 0;
+		
+		if (!existeArquivo("pilotos.dat", "rb")) {
+			criaArquivo("pilotos.dat", "wb+");
+		}
+		if ((a = fopen("pilotos.dat", "rb+")) == NULL) {
+			ERRO_DB_PILOTO
+			exit(EXIT_FAILURE);
+		}
+		if (!existeArquivo("circuitos.dat", "rb")) {
+			criaArquivo("circuitos.dat", "wb+");
+		}
+		if ((b = fopen("circuitos.dat", "rb+")) == NULL) {
+			ERRO_DB_CIRCUITO
+			exit(EXIT_FAILURE);
+		}
+		if (!existeArquivo("voltas.dat", "rb")) {
+			criaArquivo("voltas.dat", "wb+");
+		}
+		if ((c = fopen("voltas.dat", "rb+")) == NULL) {
+			ERRO_DB_VOLTAS
+			exit(EXIT_FAILURE);
+		}
+		
+		pPiloto = coletaDadosPiloto(&qtdPilotos, a);
+		pCircuito = coletaDadosCircuito(&qtdCircuitos, b);
+		pVolta = coletaDadosVolta(&qtdVoltas, c);
+		
+		fclose(a);
+		fclose(b);
+		fclose(c);
+		
+		system("cls");
+		cabecalho("ALTERACAO DE VOLTAS");
+		if (qtdVoltas == 0) {
+			ERRO_VOLTAS
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		if (qtdCircuitos == 0) {
+			ERRO_CIRCUITOS
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		if (qtdPilotos == 0) {
+			ERRO_PILOTOS
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		printf("Escolha a volta a ser alterada:\n");
+		for (i = 0; i < qtdVoltas; i++) {
+			printf("(%2d) - Circuito: %3d Data: %-10s", i+1, pVolta[i].circuito, pVolta[i].dataVolta);
+			printf(" Equipe: %-3s Piloto: %3d", pVolta[i].equipePiloto.sigla, pVolta[i].piloto);
+			printf(" Tempo: %2d:%2d:%4d\n", pVolta[i].melhorVolta.minutos, pVolta[i].melhorVolta.segundos, pVolta[i].melhorVolta.milisegundos);
+		}
+		leValidaInt(&alteraVolta, 1, i+1, "Digite sua escolha abaixo:\n");
+		
+		LINHA
+		
+		printf("Escolha o piloto da volta abaixo:\n");
+		for (i = 0; i < qtdPilotos; i++) {
+			printf("(%2d) - ID: %3d Nome: %-15s\n", i+1, pPiloto[i].id, pPiloto[i].nome);
+		}
+		leValidaInt(&opcaoPiloto, 1, i+1, "Digite sua escolha abaixo:\n");
+		pVolta[alteraVolta-1].piloto = pPiloto[opcaoPiloto-1].id;
+		pVolta[alteraVolta-1].equipePiloto = pPiloto[opcaoPiloto-1].equipePiloto;
+		
+		LINHA
+		
+		printf("Escolha o circuito da volta abaixo:\n");
+		for (i = 0; i < qtdCircuitos; i++) {
+			printf("(%2d) - ID: %3d Nome: %-15s\n", i+1, pCircuito[i].id, pCircuito[i].nome);
+		}
+		leValidaInt(&opcaoCircuito, 1, i+1, "Digite sua escolha abaixo:\n");
+		pVolta[alteraVolta-1].circuito = pCircuito[opcaoCircuito-1].id;
+		
+		LINHA
+		
+		leValidaData(pVolta[alteraVolta-1].dataVolta, "Digite a data da volta [dd/mm/aaaa]: ");
+		
+		LINHA
+		
+		leValidaTempo(&pVolta[alteraVolta-1].melhorVolta.minutos, &pVolta[alteraVolta-1].melhorVolta.segundos, &pVolta[alteraVolta-1].melhorVolta.milisegundos, "Digite o tempo da volta [min:seg:mili]: ");
+		tempoSegundosVolta = (pVolta[alteraVolta-1].melhorVolta.minutos * 60) + pVolta[alteraVolta-1].melhorVolta.segundos + (pVolta[alteraVolta-1].melhorVolta.milisegundos * 0.001);
+		melhorVoltaSegundos = (pCircuito[opcaoCircuito-1].menorTempo.minutos * 60) + pCircuito[opcaoCircuito-1].menorTempo.segundos + (pCircuito[opcaoCircuito-1].menorTempo.milisegundos * 0.001);
+		
+		if (tempoSegundosVolta < melhorVoltaSegundos) {
+			pCircuito[opcaoCircuito-1].menorTempo.minutos = pVolta[alteraVolta-1].melhorVolta.minutos;
+			pCircuito[opcaoCircuito-1].menorTempo.segundos = pVolta[alteraVolta-1].melhorVolta.segundos;
+			pCircuito[opcaoCircuito-1].menorTempo.milisegundos = pVolta[alteraVolta-1].melhorVolta.milisegundos;
+
+			criaArquivo("auxiliar.dat", "wb");
+			if ((d = fopen("auxiliar.dat", "rb+")) == NULL) {
+				ERRO_AUXILIAR
+				exit(EXIT_FAILURE);
+			}
+			for (i = 0; i < qtdCircuitos; i++) {
+				fwrite((pCircuito+i), sizeof(circuito), 1, d);
+			}
+			fclose(d);
+			remove("circuitos.dat");
+			rename("auxiliar.dat", "circuitos.dat");
+		}
+		
+		criaArquivo("auxiliar.dat", "wb");
+		if ((e = fopen("auxiliar.dat", "rb+")) == NULL) {
+			ERRO_AUXILIAR
+			exit(EXIT_FAILURE);
+		}
+		for (i = 0; i < qtdVoltas; i++) {
+			fwrite((pVolta+i), sizeof(volta), 1, e);
+		}
+		fclose(e);
+		remove("voltas.dat");
+		rename("auxiliar.dat", "voltas.dat");
+		
+		apresentaEscolheMenuRepete(&opcao);
+		if (qtdPilotos != 0) {
+			free(pPiloto);
+		}
+		if (qtdCircuitos != 0) {
+			free(pCircuito);
+		}
+		if (qtdVoltas != 0) {
+			free(pVolta);
+		}
+	} while(opcao == 's');
 }
 
-/*Objetivo: excluir uma volta que usuário desejar
-Parâmetros: ponteiro da estrutura voltas e ponteiro da quantidade de voltas
+/* Objetivo: excluir uma volta
+Par�metros: nenhum
 Retorno: nenhum */
 
-void exclusaoVoltas(volta *dadosVoltas, int *qtdVoltas){
+void excluirVoltas(){
+	FILE *a, *e;
+	int qtdVoltas = 0, excluiVolta, i;
+	char continuar = '\0', opcao = '\0';
+	volta *pVolta = NULL;
 	
-	/*Fazer a chamada da função de apresenta voltas para a escolha*/
-	
+	do {
+		qtdVoltas = 0;
+		if (!existeArquivo("voltas.dat", "rb")) {
+			criaArquivo("voltas.dat", "wb+");
+		}
+		if ((a = fopen("voltas.dat", "rb+")) == NULL) {
+			ERRO_DB_VOLTAS
+			exit(EXIT_FAILURE);
+		}
+		
+		system("cls");
+		cabecalho("EXCLUSAO DE VOLTAS");
+		pVolta = coletaDadosVolta(&qtdVoltas, a);
+		fclose(a);
+		
+		if (qtdVoltas == 0) {
+			ERRO_VOLTAS
+			printf("Aperte ENTER para voltar ao menu.\n");
+			getch();
+			return;
+		}
+		
+		printf("Escolha a volta para excluir:\n");
+		for (i = 0; i < qtdVoltas; i++) {
+			printf("(%2d) - Circuito: %3d Data: %-10s", i+1, pVolta[i].circuito, pVolta[i].dataVolta);
+			printf(" Equipe: %-3s Piloto: %3d", pVolta[i].equipePiloto.sigla, pVolta[i].piloto);
+			printf(" Tempo: %2d:%2d:%4d\n", pVolta[i].melhorVolta.minutos, pVolta[i].melhorVolta.segundos, pVolta[i].melhorVolta.milisegundos);
+		}
+		leValidaInt(&excluiVolta, 1, i+1, "Digite sua opcao abaixo:\n");
+		leValidaChar(&continuar, 's', 'n', "Deseja mesmo excluir esta volta? [s/n]\n");
+		
+		if (continuar == 'N') {
+			printf("Voce sera mandado de volta ao menu.\n");
+			printf("Aperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		criaArquivo("auxiliar.dat", "wb"); 
+		if ((e = fopen("auxiliar.dat", "rb+")) == NULL) {
+			ERRO_AUXILIAR
+			exit(EXIT_FAILURE);
+		}
+		for (i = 0; i < qtdVoltas; i++) {
+			if (i != excluiVolta-1) {
+				fwrite((pVolta+i), sizeof(volta), 1, e);
+			}
+		}
+		fclose(e);
+		free(pVolta);
+		remove("voltas.dat");
+		rename("auxiliar.dat", "voltas.dat");
+		
+		qtdVoltas--;
+		if (qtdVoltas == 0) {
+			printf("Nao e possivel excluir mais voltas.\n");
+			printf("Voce sera mandado de volta para o menu.\nAperte ENTER para voltar.\n");
+			getch();
+			return;
+		}
+		
+		apresentaEscolheMenuRepete(&opcao);
+	} while(opcao == 's');
 }
+
+/* Objetivo: gerar os n�meros de ID dos pilotos
+Entrada: vetor dos n�meros que ser�o apresentados, n�meros cadastrados, quantidade de pilotos cadastrados
+Sa�da: nenhuma */
 
 void geraNumerosPiloto(int *numeros, piloto *pPiloto, int *qtdPiloto) {
 	int i, j, flag = 1;
@@ -501,12 +1291,12 @@ void geraNumerosPiloto(int *numeros, piloto *pPiloto, int *qtdPiloto) {
 	srand(time(NULL));
 	do {
 		for (i = 0; i < QTD_NUM; i++) {
-			*(numeros+i) = rand() % 100; 
+			*(numeros+i) = rand() % 100;
 		}
 		if (*qtdPiloto != 0) {
 			for (i = 0; i < *qtdPiloto; i++) {
 				for (j = 0; j < QTD_NUM; j++) {
-					if (*(numeros+j) = (pPiloto+i)->id) {
+					if (*(numeros+j) == (pPiloto+i)->id) {
 						flag = 0;
 						break;
 					} else {
@@ -520,4 +1310,3 @@ void geraNumerosPiloto(int *numeros, piloto *pPiloto, int *qtdPiloto) {
 		}
 	} while(!flag);
 }
-

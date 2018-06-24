@@ -1,3 +1,5 @@
+/* Arquivo Cabeçalho - Gerenciamento de Dados Cadastrais */
+
 #ifndef _GERENCIAMENTO_h
 #define _GERENCIAMENTO_h
 
@@ -5,14 +7,21 @@
 #define TAM_SIGLA 4
 #define TAM_DATA 11
 #define QTD_NUM 3
-#define ERRO_DB_PILOTO printf("Arquivo ""pilotos.dat"" indisponivel.\n");
-#define ERRO_DB_PAIS printf("Arquivo ""paises.txt"" indisponivel.\n");
-#define ERRO_DB_EQUIP printf("Arquivo ""equipes.dat"" indisponivel.\n");
-#define ERRO_DB_CIRCUITO printf("Arquivo ""circuitos.dat"" indisponivel.\n");
+#define ERRO_PILOTOS printf("Nenhum piloto foi encontrado.\nVolte ao menu e cadastre um.\n");
+#define ERRO_EQUIPES printf("Nenhuma equipe foi encontrada.\nRetorne ao menu e cadastre uma equipe.\n");
+#define ERRO_CIRCUITOS printf("Nenhum circuito foi encontrado.\nVolte ao menu e cadastre um.\n");
+#define ERRO_VOLTAS printf("Nenhuma volta cadastrada.\nRetorne ao menu e cadastre uma.\n");
+#define ERRO_EXCLUIR_PILOTO printf("Nao e possivel excluir nenhum piloto.\nVoce sera mandado de volta ao menu.\n");
+#define ERRO_EXCLUIR_EQUIPE printf("Nao e possivel excluir nenhuma equipe.\nVoce sera mandado de volta ao menu.\n");
+#define ERRO_AUXILIAR printf("Arquivo ""auxiliar.dat"" indisponivel.");
+#define ERRO_DB_PILOTO printf("Arquivo ""pilotos.dat"" indisponivel.");
+#define ERRO_DB_PAIS printf("Arquivo ""paises.txt"" indisponivel.");
+#define ERRO_DB_EQUIP printf("Arquivo ""equipes.dat"" indisponivel.");
+#define ERRO_DB_CIRCUITO printf("Arquivo ""circuitos.dat"" indisponivel.");
+#define ERRO_DB_VOLTAS printf("Arquivo ""voltas.dat"" indisponivel.");
 #define ERRO_DB_PAIS_VAZIO printf("O Banco de Dados de Paises esta vazio.\nPortanto, preencha manualmente.\n");
-#define ERRO_DB_EQUIPE_VAZIO printf("O Banco de Dados de Equipes esta vazio.\nPortanto, preencha manualmente.\n");
-#define ERRO_CAD_PILOT printf("Piloto invalido! Este piloto ja esta cadastrado!\nAperte ENTER para cadastrar outro\n");
-#define ERRO_CAD_EQUIP printf("Equipe Invalida! Esta equipe ja esta cadastrada!\nAperte ENTER para cadastrar outra\n");
+#define ERRO_CAD_PILOT printf("Piloto invalido! Este piloto ja esta cadastrado!\n");
+#define ERRO_CAD_EQUIP printf("Equipe Invalida! Esta equipe ja esta cadastrada!\n");
 
 typedef struct Tempo{
 	int minutos;
@@ -59,13 +68,13 @@ typedef struct Volta{
 
 void geraNumerosPiloto(int *numeros, piloto *pPiloto, int *qtdPiloto);
 void inclusaoPilotos();
-void alterarPilotos(piloto *dadosPilotos, int *qtdPilotos);
-void excluirPilotos(piloto *dadosPilotos, int *qtdPilotos);
+void alterarPilotos();
+void excluirPilotos();
 void inclusaoEquipes();
-void excluirEquipes(equipe *dadosEquipes, int *qtdEquipes);
+void excluirEquipes();
 void inclusaoCircuitos();
-void alterarCircuitos(circuito *dadosCircuito, int *qtdCircuitos);
+void alterarCircuitos();
 void inclusaoVoltas();
-void alterarVoltas(volta *dadosVoltas, int *qtdVoltas);
-void exclusaoVoltas(volta *dadosVoltas, int *qtdVoltas);
+void alterarVoltas();
+void excluirVoltas();
 #endif

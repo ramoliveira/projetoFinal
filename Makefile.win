@@ -1,17 +1,17 @@
 # Project: ProjetoFinal
-# Makefile created by Dev-C++ 5.9.2
+# Makefile created by Dev-C++ 5.11
 
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o gerenciamentoControle.o menu.o ui.o storage.o
-LINKOBJ  = main.o gerenciamentoControle.o menu.o ui.o storage.o
-LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -g3
-INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include"
-CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++"
+OBJ      = main.o menu.o ui.o storage.o gerenciamento.o validacoes.o
+LINKOBJ  = main.o menu.o ui.o storage.o gerenciamento.o validacoes.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
 BIN      = ProjetoFinal.exe
-CXXFLAGS = $(CXXINCS) -g3
-CFLAGS   = $(INCS) -g3
+CXXFLAGS = $(CXXINCS) -O0
+CFLAGS   = $(INCS) -O0
 RM       = rm.exe -f
 
 .PHONY: all all-before all-after clean clean-custom
@@ -27,9 +27,6 @@ $(BIN): $(OBJ)
 main.o: main.c
 	$(CC) -c main.c -o main.o $(CFLAGS)
 
-gerenciamentoControle.o: gerenciamentoControle.c
-	$(CC) -c gerenciamentoControle.c -o gerenciamentoControle.o $(CFLAGS)
-
 menu.o: menu.c
 	$(CC) -c menu.c -o menu.o $(CFLAGS)
 
@@ -38,3 +35,9 @@ ui.o: ui.c
 
 storage.o: storage.c
 	$(CC) -c storage.c -o storage.o $(CFLAGS)
+
+gerenciamento.o: gerenciamento.c
+	$(CC) -c gerenciamento.c -o gerenciamento.o $(CFLAGS)
+
+validacoes.o: validacoes.c
+	$(CC) -c validacoes.c -o validacoes.o $(CFLAGS)
