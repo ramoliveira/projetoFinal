@@ -47,7 +47,7 @@ void apresentaEscolheMenuPiloto(char *opcao) {
 	int flag = 1;
 	
 	do {
-		cabecalho("Menu do Piloto");
+		cabecalho("Menu dos Pilotos");
 		OPCOES
 		printf("(1) - Inclusao de pilotos;\n");
 		printf("(2) - Alteracao de pilotos;\n");
@@ -75,7 +75,7 @@ void apresentaEscolheMenuEquipe(char *opcao) {
 	int flag = 1;
 	
 	do {
-		cabecalho("Menu da Equipe");
+		cabecalho("Menu das Equipes");
 		OPCOES
 		printf("(1) - Inclusao de equipes;\n");
 		printf("(2) - Exclusao de equipes;\n");
@@ -102,7 +102,7 @@ void apresentaEscolheMenuCircuito(char *opcao) {
 	int flag = 1;
 	
 	do {
-		cabecalho("Menu do Circuito");
+		cabecalho("Menu dos Circuitos");
 		OPCOES
 		printf("(1) - Inclusao de circuitos;\n");
 		printf("(2) - Alteracao de circuitos;\n");
@@ -129,12 +129,12 @@ void apresentaEscolheMenuVolta(char *opcao) {
 	int flag = 1;
 	
 	do {
-		cabecalho("Menu de Voltas");
+		cabecalho("Menu das Voltas");
 		OPCOES
-		printf("(1) - Inclusao da melhor volta;\n");
+		printf("(1) - Inclusao de volta;\n");
 		printf("(2) - Alteracao de dados das voltas;\n");
-		printf("(3) - Exclusao de volta;\n");
-		printf("(R) - Retornar para o menu principa.\n");
+		printf("(3) - Exclusao de voltas;\n");
+		printf("(R) - Retornar para o menu principal.\n");
 		scanf(" %c", opcao);
 		*opcao = tolower(*opcao);
 		if ((*opcao < 49 || *opcao > 51) && (*opcao != 'r')) {
@@ -157,7 +157,7 @@ void apresentaEscolheMenuRelatorio(char *opcao) {
 	int flag = 1;
 	
 	do {
-		cabecalho("Menu de Relatorios");
+		cabecalho("Menu dos Relatorios");
 		OPCOES
 		printf("(1) - Relacionar dados de acordo com o tipo escolhido;\n");
 		printf("(2) - Pesquisar pelo nome do piloto;\n");
@@ -187,7 +187,7 @@ void apresentaEscolheMenuRelatorios1(char *opcao) {
 	int flag = 1;
 	
 	do {
-		cabecalho("Menu de Relatorios(1)");
+		cabecalho("Menu de Relatorio Tipo(1)");
 		OPCOES
 		printf("(1) - Dados gerais dos pilotos;\n");
 		printf("(2) - Dados gerais das equipes;\n");

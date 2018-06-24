@@ -57,6 +57,8 @@ void inclusaoPilotos(){
 		system("cls");
 		cabecalho("Cadastro de Piloto");
 		if (qtdEquipCad == 0) {
+			free(pEquip); free(pPiloto); free(pPais);
+			fclose(f); fclose(p); fclose(q);
 			ERRO_EQUIPES
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -200,6 +202,7 @@ void alterarPilotos(){
 		system("cls");
 		cabecalho("ALTERACAO DE PILOTOS");
 		if (qtdPilotos == 0) {
+			free(pPiloto); free(pPais); free(pEquipe);
 			ERRO_PILOTOS
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -207,6 +210,7 @@ void alterarPilotos(){
 		}
 		
 		if (qtdEquipes == 0) {
+			free(pPiloto); free(pPais); free(pEquipe);
 			ERRO_EQUIPES
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -344,6 +348,7 @@ void excluirPilotos(){
 		fclose(b);
 		
 		if (qtdPilotos == 0) {
+			free(pPiloto); free(pVolta);
 			ERRO_PILOTOS
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -375,6 +380,7 @@ void excluirPilotos(){
 		}
 		
 		if (cont1 == 0) {
+			free(pPiloto); free(pVolta);
 			ERRO_EXCLUIR_PILOTO
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -392,6 +398,7 @@ void excluirPilotos(){
 		leValidaChar(&continuar, 's', 'n', "Deseja mesmo excluir este piloto? [s/n]\n");
 		
 		if (continuar == 'N') {
+			free(pPiloto); free(pVolta);
 			printf("Voce sera mandado de volta ao menu.\n");
 			printf("Aperte ENTER para volta.\n");
 			getch();
@@ -494,6 +501,8 @@ void inclusaoEquipes(){
 				leValidaInt(&opcaoPais, 1, i+1, "Digite o pais escolhido:\n");
 				equipeCadastro.paisEquipe = pPais[opcaoPais-1];
 			} else {
+				free(pEquipe); free(pPais);
+				fclose(f); fclose(p);
 				ERRO_DB_PAIS_VAZIO
 				exit(EXIT_FAILURE);
 			}
@@ -572,6 +581,7 @@ void excluirEquipes(){
 		fclose(b);
 		
 		if (qtdEquipes == 0) {
+			free(pPiloto); free(pEquipe);
 			ERRO_EQUIPES
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -603,6 +613,7 @@ void excluirEquipes(){
 		}
 		
 		if (cont1 == 0) {
+			free(pPiloto); free(pEquipe);
 			ERRO_EXCLUIR_EQUIPE
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -620,6 +631,7 @@ void excluirEquipes(){
 		leValidaChar(&continuar, 's', 'n', "Deseja mesmo excluir esta equipe? [s/n]\n");
 		
 		if (continuar == 'N') {
+			free(pPiloto); free(pEquipe);
 			printf("Voce sera mandado de volta ao menu.\n");
 			printf("Aperte ENTER para volta.\n");
 			getch();
@@ -708,6 +720,8 @@ void inclusaoCircuitos(){
 		system("cls");
 		cabecalho("CADASTRO DE CIRCUITOS");
 		if (qtdPilotoCad == 0) {
+			fclose(a); fclose(b); fclose(c);
+			free(pPiloto); free(pPais); free(pCircuito);
 			ERRO_PILOTOS
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -749,6 +763,8 @@ void inclusaoCircuitos(){
 			leValidaInt(&opcaoPais, 1, i+1, "Digite de acordo com o indice: ");
 			circuitoCadastro.paisCircuito = pPais[opcaoPais-1];
 		} else {
+			fclose(a); fclose(b); fclose(c);
+			free(pPiloto); free(pPais); free(pCircuito);
 			ERRO_DB_PAIS_VAZIO
 			exit(EXIT_FAILURE);
 		}
@@ -838,6 +854,7 @@ void alterarCircuitos(){
 		system("cls");
 		cabecalho("ALTERACAO DE CIRCUITOS");
 		if (qtdCircuitos == 0) {
+			free(pPiloto); free(pPais); free(pCircuito);
 			ERRO_CIRCUITOS
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -969,6 +986,8 @@ void inclusaoVoltas(){
 		system("cls");
 		cabecalho("CADASTRO DE VOLTAS");
 		if (qtdCircuitoCad == 0) {
+			fclose(a); fclose(b); fclose(c);
+			free(pPiloto); free(pCircuito); free(pVolta);
 			ERRO_CIRCUITOS
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -976,6 +995,8 @@ void inclusaoVoltas(){
 		}
 		
 		if (qtdPilotoCad == 0) {
+			fclose(a); fclose(b); fclose(c);
+			free(pPiloto); free(pCircuito); free(pVolta);
 			ERRO_PILOTOS
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -993,13 +1014,31 @@ void inclusaoVoltas(){
 		voltaCadastro.melhorVolta.segundos = -1;
 		voltaCadastro.melhorVolta.milisegundos = -1;
 		
-		printf("Escolha o piloto da volta abaixo:\n");
-		for (i = 0; i < qtdPilotoCad; i++) {
-			printf("(%2d) - ID: %3d Nome: %-15s\n", i+1, pPiloto[i].id, pPiloto[i].nome);
-		}
-		leValidaInt(&opcaoPiloto, 1, i+1, "Digite sua escolha abaixo:\n");
-		voltaCadastro.piloto = pPiloto[opcaoPiloto-1].id;
-		voltaCadastro.equipePiloto = pPiloto[opcaoPiloto-1].equipePiloto;
+		do {
+			printf("Escolha o piloto da volta abaixo:\n");
+			for (i = 0; i < qtdPilotoCad; i++) {
+				printf("(%2d) - ID: %3d Nome: %-15s\n", i+1, pPiloto[i].id, pPiloto[i].nome);
+			}
+			leValidaInt(&opcaoPiloto, 1, i+1, "Digite sua escolha abaixo:\n");
+			voltaCadastro.piloto = pPiloto[opcaoPiloto-1].id;
+			voltaCadastro.equipePiloto = pPiloto[opcaoPiloto-1].equipePiloto;
+			
+			LINHA
+						
+			leValidaData(voltaCadastro.dataVolta, "Digite a data da volta [dd/mm/aaaa]: ");
+			
+			if (qtdVoltaCad != 0) {
+				for (i = 0; i < qtdVoltaCad; i++) {
+					if (stricmp(voltaCadastro.dataVolta, pVolta[i].dataVolta) == 0 && voltaCadastro.piloto == pVolta[i].piloto) {
+						printf("Volta invalida! Este piloto ja esta cadastrado neste dia.\n");
+						flag = 0;
+						break;
+					} else {
+						flag = 1;
+					}
+				}
+			}
+		} while(!flag);
 		
 		LINHA
 		
@@ -1009,10 +1048,6 @@ void inclusaoVoltas(){
 		}
 		leValidaInt(&opcaoCircuito, 1, i+1, "Digite sua escolha abaixo:\n");
 		voltaCadastro.circuito = pCircuito[opcaoCircuito-1].id;
-		
-		LINHA
-		
-		leValidaData(voltaCadastro.dataVolta, "Digite a data da volta [dd/mm/aaaa]: ");
 		
 		LINHA
 		
@@ -1039,6 +1074,7 @@ void inclusaoVoltas(){
 		}
 		
 		fwrite(&voltaCadastro, sizeof(volta), 1, c);
+		
 		apresentaEscolheMenuRepete(&opcao);
 		if (qtdPilotoCad != 0) {
 			free(pPiloto);
@@ -1062,7 +1098,7 @@ Retorno: nenhum */
 void alterarVoltas(){
 	FILE *a, *b, *c, *d, *e;
 	char opcao = '\0';
-	int qtdPilotos, qtdCircuitos, qtdVoltas, i, alteraVolta, opcaoPiloto, opcaoCircuito;
+	int qtdPilotos, qtdCircuitos, qtdVoltas, i, alteraVolta, opcaoPiloto, opcaoCircuito, flag;
 	float tempoSegundosVolta, melhorVoltaSegundos;
 	piloto *pPiloto;
 	circuito *pCircuito;
@@ -1106,6 +1142,7 @@ void alterarVoltas(){
 		system("cls");
 		cabecalho("ALTERACAO DE VOLTAS");
 		if (qtdVoltas == 0) {
+			free(pPiloto); free(pCircuito); free(pVolta);
 			ERRO_VOLTAS
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -1113,6 +1150,7 @@ void alterarVoltas(){
 		}
 		
 		if (qtdCircuitos == 0) {
+			free(pPiloto); free(pCircuito); free(pVolta);
 			ERRO_CIRCUITOS
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -1120,6 +1158,7 @@ void alterarVoltas(){
 		}
 		
 		if (qtdPilotos == 0) {
+			free(pPiloto); free(pCircuito); free(pVolta);
 			ERRO_PILOTOS
 			printf("Aperte ENTER para voltar.\n");
 			getch();
@@ -1136,14 +1175,32 @@ void alterarVoltas(){
 		
 		LINHA
 		
-		printf("Escolha o piloto da volta abaixo:\n");
-		for (i = 0; i < qtdPilotos; i++) {
-			printf("(%2d) - ID: %3d Nome: %-15s\n", i+1, pPiloto[i].id, pPiloto[i].nome);
-		}
-		leValidaInt(&opcaoPiloto, 1, i+1, "Digite sua escolha abaixo:\n");
-		pVolta[alteraVolta-1].piloto = pPiloto[opcaoPiloto-1].id;
-		pVolta[alteraVolta-1].equipePiloto = pPiloto[opcaoPiloto-1].equipePiloto;
-		
+		do {
+			printf("Escolha o piloto da volta abaixo:\n");
+			for (i = 0; i < qtdPilotos; i++) {
+				printf("(%2d) - ID: %3d Nome: %-15s\n", i+1, pPiloto[i].id, pPiloto[i].nome);
+			}
+			leValidaInt(&opcaoPiloto, 1, i+1, "Digite sua escolha abaixo:\n");
+			pVolta[alteraVolta-1].piloto = pPiloto[opcaoPiloto-1].id;
+			pVolta[alteraVolta-1].equipePiloto = pPiloto[opcaoPiloto-1].equipePiloto;
+			
+			LINHA
+			
+			leValidaData(pVolta[alteraVolta-1].dataVolta, "Digite a data da volta [dd/mm/aaaa]: ");
+			
+			if (qtdVoltas != 0) {
+				for (i = 0; i < qtdVoltas; i++) {
+					if (stricmp(pVolta[alteraVolta-1].dataVolta, pVolta[i].dataVolta) == 0 && pVolta[alteraVolta-1].piloto == pVolta[i].piloto && i != alteraVolta-1) {
+						printf("Volta invalida! Este piloto ja esta cadastrado neste dia.\n");
+						flag = 0;
+						break;
+					} else {
+						flag = 1;
+					}
+				}
+			}		
+		} while(!flag);
+
 		LINHA
 		
 		printf("Escolha o circuito da volta abaixo:\n");
@@ -1152,10 +1209,6 @@ void alterarVoltas(){
 		}
 		leValidaInt(&opcaoCircuito, 1, i+1, "Digite sua escolha abaixo:\n");
 		pVolta[alteraVolta-1].circuito = pCircuito[opcaoCircuito-1].id;
-		
-		LINHA
-		
-		leValidaData(pVolta[alteraVolta-1].dataVolta, "Digite a data da volta [dd/mm/aaaa]: ");
 		
 		LINHA
 		
@@ -1232,6 +1285,7 @@ void excluirVoltas(){
 		fclose(a);
 		
 		if (qtdVoltas == 0) {
+			free(pVolta);
 			ERRO_VOLTAS
 			printf("Aperte ENTER para voltar ao menu.\n");
 			getch();
@@ -1248,6 +1302,7 @@ void excluirVoltas(){
 		leValidaChar(&continuar, 's', 'n', "Deseja mesmo excluir esta volta? [s/n]\n");
 		
 		if (continuar == 'N') {
+			free(pVolta);
 			printf("Voce sera mandado de volta ao menu.\n");
 			printf("Aperte ENTER para voltar.\n");
 			getch();
