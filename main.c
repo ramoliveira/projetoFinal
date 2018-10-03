@@ -1,18 +1,17 @@
-/*Síntese - Projeto Final - Lucas Henrique - UC17201125 - Ramón Dias - UC14201004
-Objetivo: Gestão dos testes do Campeonato de Moto GP, auxiliando o usuário com diversas opções de menu
+/* SÃ­ntese - Projeto Final - Lucas Henrique - UC17201125 - RamÃ³n Dias - UC14201004
+Objetivo: gestÃ£o dos testes do Campeonato de Moto GP, auxiliando o usuÃ¡rio com diversas opÃ§Ãµes de menu
 Entrada: piloto, equipe, circuito, melhor volta
-Saída: de acordo com o menu de opções.
-*/
+SaÃ­da: de acordo com o menu de opÃ§Ãµes */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "menu.h"
 
 int main() {
-	//Declarações
+	//Declaraï¿½ï¿½es
 	char opcao = '\0';
 	
-	//Instruções
+	//Instruï¿½ï¿½es
 	
 	telaEntrada();
 	do {

@@ -1,4 +1,4 @@
-/*Arquivo de Cabeçalho - Fuções de Validação*/
+/*Arquivo de Cabeï¿½alho - Fuï¿½ï¿½es de Validaï¿½ï¿½o*/
 #ifndef _VALIDACOES_h
 #define _VALIDACOES_h
 
@@ -15,5 +15,4 @@ void leValidaSigla(char *texto, char *sigla);
 void leValidaTempo(int *minutos, int *segundos, float *milissegundos, char *texto);
 int qtdDiasAniversario(data *dataAniversario);
 int calculaDiaSemana(data *dataVolta);
-
 #endif
