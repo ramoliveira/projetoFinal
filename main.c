@@ -13,6 +13,8 @@ int main() {
 	char opcao = '\0';
 	
 	//Instruções
+	
+	telaEntrada();
 	do {
 		apresentaEscolheMenuPrincipal(&opcao);
 		chamaFuncoesMenuPrincipal(&opcao);
@@ -20,3 +22,5 @@ int main() {
 	
 	return EXIT_SUCCESS;
 }
+
+

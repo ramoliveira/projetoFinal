@@ -56,7 +56,7 @@ void inclusaoPilotos(){
 		
 		system("cls");
 		cabecalho("Cadastro de Piloto");
-		if (qtdEquipCad == 0) {
+			if (qtdEquipCad == 0) {
 			free(pEquip); free(pPiloto); free(pPais);
 			fclose(f); fclose(p); fclose(q);
 			ERRO_EQUIPES
@@ -66,7 +66,6 @@ void inclusaoPilotos(){
 		}
 		
 		strcpy(pilotoCadastro.nome, "");
-		strcpy(pilotoCadastro.dataNascimento, "");
 		strcpy(pilotoCadastro.equipePiloto.nome, "");
 		strcpy(pilotoCadastro.equipePiloto.sigla, "");
 		strcpy(pilotoCadastro.equipePiloto.paisEquipe.nome, "");
@@ -94,7 +93,7 @@ void inclusaoPilotos(){
 		
 		LINHA
 
-		leValidaData(pilotoCadastro.dataNascimento, "Digite a data de nascimento do piloto [dd/mm/aaaa]: ");
+		leValidaData(&pilotoCadastro.dataNascimento,"Digite a data de nascimento do piloto [dd/mm/aaaa]: ");
 		
 		LINHA
 		
@@ -107,7 +106,7 @@ void inclusaoPilotos(){
 		for (i = 0; i < QTD_NUM; i++) {
 			printf("(%2d) - %3d\n", i+1, numeros[i]);
 		}
-		leValidaInt(&opcaoId, 1, i+1, "Digite de acordo com o indice: ");
+		leValidaInt(&opcaoId, 1,QTD_NUM,"Digite de acordo com o indice: ");
 		pilotoCadastro.id = numeros[opcaoId-1];
 		
 		LINHA
@@ -121,17 +120,20 @@ void inclusaoPilotos(){
 			pilotoCadastro.paisPiloto = pPais[opcaoPais-1];
 		} else {
 			ERRO_DB_PAIS_VAZIO
-			exit(EXIT_FAILURE);
 		}
 		
 		LINHA
 		
-		printf("Escolha a equipe do piloto:\n");
-		for (i = 0; i < qtdEquipCad; i++) {
-			printf("(%2d) - Sigla: %3s Nome: %-15s\n", i+1, pEquip[i].sigla, pEquip[i].nome);
+		if (qtdEquipCad != 0) {
+			printf("Escolha a equipe do piloto:\n");
+			for (i = 0; i < qtdEquipCad; i++) {
+				printf("(%2d) - Sigla: %3s Nome: %-15s\n", i+1, pEquip[i].sigla, pEquip[i].nome);
+			}
+			leValidaInt(&opcaoEquipe, 1, i+1, "Digite de acordo com o indice: ");
+			pilotoCadastro.equipePiloto = pEquip[opcaoEquipe-1];
+		} else {
+			ERRO_DB_EQUIPE_VAZIO
 		}
-		leValidaInt(&opcaoEquipe, 1, i+1, "Digite de acordo com o indice: ");
-		pilotoCadastro.equipePiloto = pEquip[opcaoEquipe-1];
 		
 		fwrite(&pilotoCadastro, sizeof(piloto), 1, f);
 
@@ -150,12 +152,12 @@ void inclusaoPilotos(){
 	fclose(f);
 	fclose(p);
 	fclose(q);
+	free(pPais);free(pEquip);free(pPiloto);
 }
 
 /* Objetivo: alterar um piloto cadastrado
 Parâmetros: nenhum
 Retorno: nenhum */
-
 void alterarPilotos(){
 	FILE *a = NULL, *b = NULL, *c = NULL, *d = NULL;
 	char opcao = '\0', continuar = '\0';
@@ -243,7 +245,7 @@ void alterarPilotos(){
 		
 		LINHA
 		
-		leValidaData(pPiloto[alteraPiloto-1].dataNascimento, "Digite a data de nascimento do piloto [dd/mm/aaaa]: ");
+		leValidaData(&pPiloto[alteraPiloto-1].dataNascimento, "Digite a data de nascimento do piloto [dd/mm/aaaa]: ");
 		
 		LINHA
 		
@@ -256,7 +258,7 @@ void alterarPilotos(){
 		for (i = 0; i < QTD_NUM; i++) {
 			printf("(%2d) - %3d\n", i+1, numeros[i]);
 		}
-		leValidaInt(&opcaoId, 1, i+1, "Digite de acordo com o indice: ");
+		leValidaInt(&opcaoId, 1, QTD_NUM, "Digite de acordo com o indice: ");
 		pPiloto[alteraPiloto-1].id = numeros[opcaoId-1];
 		
 		LINHA
@@ -307,10 +309,10 @@ void alterarPilotos(){
 	} while(opcao == 's');
 }
 
+
 /* Objetivo: excluir um piloto cadastrado
 Parâmetros: nenhum 
 Retorno: nenhum */
-
 
 void excluirPilotos(){	
 	FILE *a = NULL, *b = NULL, *c = NULL;
@@ -781,9 +783,9 @@ void inclusaoCircuitos(){
 		
 		printf("Escolha o piloto com o menor tempo no circuito:\n");
 		for (i = 0; i < qtdPilotoCad; i++) {
-			printf("(%2d) - Piloto: %-15s Equipe %s\n", i+1, pPiloto[i].nome, pPiloto[i].equipePiloto);
+			printf("(%2d) - Piloto: %-15s Equipe %s\n", i+1, pPiloto[i].nome, pPiloto[i].equipePiloto.sigla);
 		}
-		leValidaInt(&opcaoPiloto, 1, i+1, "Digite sua opcao abaixo: ");
+		leValidaInt(&opcaoPiloto, 1, qtdPilotoCad, "Digite sua opcao abaixo: ");
 		strcpy(circuitoCadastro.pilotoMenorTempo, pPiloto[opcaoPiloto-1].nome);
 		
 		fwrite(&circuitoCadastro, sizeof(circuito), 1, c);
@@ -946,7 +948,7 @@ Retorno: nenhum */
 void inclusaoVoltas(){
 	FILE *a, *b, *c, *d;
 	char opcao = '\0';
-	int flag, qtdPilotoCad = 0, qtdCircuitoCad = 0, qtdVoltaCad = 0, i, opcaoPiloto, opcaoCircuito;
+	int flag, qtdPilotoCad = 0, qtdCircuitoCad = 0, qtdVoltaCad = 0, i, opcaoPiloto, opcaoCircuito, diaSemana=0,dataAux=0,flag2=0;
 	float tempoSegundosVolta, melhorVoltaSegundos;
 	piloto *pPiloto = NULL; 
 	circuito *pCircuito = NULL; 
@@ -1009,7 +1011,6 @@ void inclusaoVoltas(){
 		strcpy(voltaCadastro.equipePiloto.sigla, "");
 		strcpy(voltaCadastro.equipePiloto.paisEquipe.nome, "");
 		strcpy(voltaCadastro.equipePiloto.paisEquipe.sigla, "");
-		strcpy(voltaCadastro.dataVolta, "");
 		voltaCadastro.melhorVolta.minutos = -1;
 		voltaCadastro.melhorVolta.segundos = -1;
 		voltaCadastro.melhorVolta.milisegundos = -1;
@@ -1024,12 +1025,31 @@ void inclusaoVoltas(){
 			voltaCadastro.equipePiloto = pPiloto[opcaoPiloto-1].equipePiloto;
 			
 			LINHA
-						
-			leValidaData(voltaCadastro.dataVolta, "Digite a data da volta [dd/mm/aaaa]: ");
+			
+			do{	
+				do{
+					fflush(stdin);
+					leValidaData(&voltaCadastro.dataVolta, "Digite a data da volta [dd/mm/aaaa]: ");
+					dataAux = (MIN_DIA + (MIN_MES * 30) + (MIN_ANO * 365));
+					
+					if((voltaCadastro.dataVolta.dia + (voltaCadastro.dataVolta.mes * 30) + (voltaCadastro.dataVolta.ano * 365)) < dataAux){
+						printf("A data minima para cadastro e %d/%d/%d\n", MIN_DIA,MIN_MES,MIN_ANO);getch();system("cls");
+						flag2=1;
+					}else{
+						flag2=0;
+					}
+				}while(flag2==1);
+				
+				diaSemana = calculaDiaSemana(&voltaCadastro.dataVolta);
+				if(diaSemana!=0){
+					printf("O dia da semana deve ser domingo\n");getch();system("cls");
+				}
+			}while(diaSemana!=0);
+		
 			
 			if (qtdVoltaCad != 0) {
 				for (i = 0; i < qtdVoltaCad; i++) {
-					if (stricmp(voltaCadastro.dataVolta, pVolta[i].dataVolta) == 0 && voltaCadastro.piloto == pVolta[i].piloto) {
+					if (voltaCadastro.dataVolta.dia == pVolta[i].dataVolta.dia && voltaCadastro.dataVolta.mes == pVolta[i].dataVolta.mes && voltaCadastro.dataVolta.ano == pVolta[i].dataVolta.ano && voltaCadastro.piloto == pVolta[i].piloto) {
 						printf("Volta invalida! Este piloto ja esta cadastrado neste dia.\n");
 						flag = 0;
 						break;
@@ -1038,7 +1058,7 @@ void inclusaoVoltas(){
 					}
 				}
 			}
-		} while(!flag);
+		} while(flag==0);
 		
 		LINHA
 		
@@ -1098,7 +1118,7 @@ Retorno: nenhum */
 void alterarVoltas(){
 	FILE *a, *b, *c, *d, *e;
 	char opcao = '\0';
-	int qtdPilotos, qtdCircuitos, qtdVoltas, i, alteraVolta, opcaoPiloto, opcaoCircuito, flag;
+	int qtdPilotos, qtdCircuitos, qtdVoltas, i, alteraVolta, opcaoPiloto, opcaoCircuito, flag, diaSemana=0;
 	float tempoSegundosVolta, melhorVoltaSegundos;
 	piloto *pPiloto;
 	circuito *pCircuito;
@@ -1186,11 +1206,17 @@ void alterarVoltas(){
 			
 			LINHA
 			
-			leValidaData(pVolta[alteraVolta-1].dataVolta, "Digite a data da volta [dd/mm/aaaa]: ");
+			do{
+				leValidaData(&pVolta[alteraVolta-1].dataVolta, "Digite a data da volta [dd/mm/aaaa]: ");
+				diaSemana = calculaDiaSemana(&pVolta[alteraVolta-1].dataVolta);
+				if(diaSemana!=0){
+					printf("O dia da semana deve ser domingo\n");getch();system("cls");
+				}
+			}while(diaSemana!=0);
 			
 			if (qtdVoltas != 0) {
 				for (i = 0; i < qtdVoltas; i++) {
-					if (stricmp(pVolta[alteraVolta-1].dataVolta, pVolta[i].dataVolta) == 0 && pVolta[alteraVolta-1].piloto == pVolta[i].piloto && i != alteraVolta-1) {
+					if (pVolta[alteraVolta-1].dataVolta.dia == pVolta[i].dataVolta.dia && pVolta[alteraVolta-1].dataVolta.mes == pVolta[i].dataVolta.mes && pVolta[alteraVolta-1].dataVolta.ano == pVolta[i].dataVolta.ano && pVolta[alteraVolta-1].piloto == pVolta[i].piloto && i != alteraVolta-1) {
 						printf("Volta invalida! Este piloto ja esta cadastrado neste dia.\n");
 						flag = 0;
 						break;
@@ -1199,7 +1225,7 @@ void alterarVoltas(){
 					}
 				}
 			}		
-		} while(!flag);
+		} while(flag!=1);
 
 		LINHA
 		
@@ -1364,4 +1390,152 @@ void geraNumerosPiloto(int *numeros, piloto *pPiloto, int *qtdPiloto) {
 			}			
 		}
 	} while(!flag);
+}
+
+/*
+Objetivo: ordenar pelo nome
+Parâmetros: ponteiro de pilotos, ponteiro quantidade de atletas e o tipo
+Retorno: nenhum
+*/
+
+void bubbleSortNome(piloto *pilotos, int *qtdPilotos, char tipo){
+	
+	int i,j;
+	piloto aux;
+	
+	if(tipo == 'C'){
+		/*CRESCENTE*/
+		for(i=0;i<*qtdPilotos;i++){
+			for(j=i+1;j<*qtdPilotos;j++){
+				if((stricmp(pilotos[i].nome,pilotos[j].nome) > 0 && stricmp(pilotos[i].nome,""))!=0){
+					aux = pilotos[i];
+					pilotos[i] = pilotos[j];
+					pilotos[j] = aux;
+				}	
+			}
+		}
+	}else if(tipo == 'D'){
+		/*DESCRECENTE*/
+		for(i=0;i<*qtdPilotos;i++){
+			for(j=i+1;j<*qtdPilotos;j++){
+				if((stricmp(pilotos[i].nome,pilotos[j].nome) < 0 && stricmp(pilotos[i].nome,""))!=0){
+					aux = pilotos[i];
+					pilotos[i] = pilotos[j];
+					pilotos[j] = aux;
+				}	
+			}
+		}
+	}else{
+		printf("Parametro tipo Invalido\nOs dados nao foram ordenados\n");getch();system("cls");
+		return;
+	}
+}
+
+/*
+Objetivo: ordenar pela idade
+Parâmetros: ponteiro de pilotos, ponteiro quantidade de pilotos e o tipo
+Retorno: nenhum
+*/
+
+void bubbleSortIdade(piloto *pilotos, int *qtdPilotos, char tipo){
+	
+	int i,j;
+	piloto aux;
+	
+	if(tipo == 'C'){
+		/*CRESCENTE*/
+		for(i=0;i<*qtdPilotos;i++){
+			for(j=i+1;j<*qtdPilotos;j++){
+				if(pilotos[i].idade > pilotos[j].idade){
+					aux = pilotos[i];
+					pilotos[i] = pilotos[j];
+					pilotos[j] = aux;
+				}	
+			}
+		}
+	}else if(tipo == 'D'){
+		/*DESCRECENTE*/
+		for(i=0;i<*qtdPilotos;i++){
+			for(j=i+1;j<*qtdPilotos;j++){
+				if(pilotos[i].idade < pilotos[j].idade){
+					aux = pilotos[i];
+					pilotos[i] = pilotos[j];
+					pilotos[j] = aux;
+				}	
+			}
+		}
+	}else{
+		printf("Parametro tipo Invalido\nOs dados nao foram ordenados\n");getch();system("cls");
+		return;
+	}
+}
+
+/*
+Objetivo: ordenar pela quantidade de melhores voltas
+Parâmetros: ponteiro de pilotos, ponteiro quantidade de pilotos e o tipo
+Retorno: nenhum
+*/
+
+void bubbleSortQtdVoltas(piloto *pilotos, int *qtdPilotos, char tipo){
+	
+	int i,j;
+	piloto aux;
+	
+	if(tipo == 'C'){
+		/*CRESCENTE*/
+		for(i=0;i<*qtdPilotos;i++){
+			for(j=i+1;j<*qtdPilotos;j++){
+				if(pilotos[i].qtdMelhoresVoltas > pilotos[j].qtdMelhoresVoltas){
+					aux = pilotos[i];
+					pilotos[i] = pilotos[j];
+					pilotos[j] = aux;
+				}	
+			}
+		}
+	}else if(tipo == 'D'){
+		/*DESCRECENTE*/
+		for(i=0;i<*qtdPilotos;i++){
+			for(j=i+1;j<*qtdPilotos;j++){
+				if(pilotos[i].qtdMelhoresVoltas < pilotos[j].qtdMelhoresVoltas){
+					aux = pilotos[i];
+					pilotos[i] = pilotos[j];
+					pilotos[j] = aux;
+				}	
+			}
+		}
+	}else{
+		printf("Parametro tipo Invalido\nOs dados nao foram ordenados\n");getch();system("cls");
+		return;
+	}
+}
+/*Objetivo: calcular idade
+Parâmetros: data de nascimento
+Retorno: idade*/
+
+int calculaIdade(data *dataNascimento){
+	
+	struct tm *local;
+	time_t t;
+	t = time(NULL);
+	local=localtime(&t);
+	int idade;
+	
+	int anoAtual = local->tm_year+1900;
+	int mesAtual = local->tm_mon+1;
+	int diaAtual = local->tm_mday;	
+	
+	
+	if(dataNascimento->mes > mesAtual){
+		idade = (anoAtual - dataNascimento->ano) - 1;
+	}else if(dataNascimento->mes == mesAtual){
+		if(dataNascimento->dia > diaAtual){
+			idade = (anoAtual - dataNascimento->ano) - 1;
+		}else{
+			idade = (anoAtual - dataNascimento->ano);
+		}
+	}else{
+		idade = (anoAtual - dataNascimento->ano);
+	}
+	
+	return idade;
 }

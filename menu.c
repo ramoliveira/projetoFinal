@@ -6,6 +6,7 @@
 #include "menu.h"
 #include "ui.h"
 #include "gerenciamento.h"
+#include "relatorios.h"
 
 /*
 Objetivo: Apresentar as opções e realizar o processo de escolha no menu principal.
@@ -157,7 +158,7 @@ void apresentaEscolheMenuRelatorio(char *opcao) {
 	int flag = 1;
 	
 	do {
-		cabecalho("Menu dos Relatorios");
+		cabecalho("Menu de Relatorios");
 		OPCOES
 		printf("(1) - Relacionar dados de acordo com o tipo escolhido;\n");
 		printf("(2) - Pesquisar pelo nome do piloto;\n");
@@ -166,37 +167,12 @@ void apresentaEscolheMenuRelatorio(char *opcao) {
 		printf("(5) - Relacionar pilotos por equipe;\n");
 		printf("(6) - Pesquisar pelo tempo da volta;\n");
 		printf("(7) - Relacionar pilotos, equipes ou circuitos sem melhor volta;\n");
+		printf("(8) - Relatorio Sintetico e Analitico;\n");
+		printf("(9) - Exibir ultimo relatorio sintetico;\n");
 		printf("(R) - Retornar ao menu principal.\n");
-		scanf(" %c", opcao);
+		scanf(" %c", opcao);system("cls");
 		*opcao = tolower(*opcao);
-		if ((*opcao < 49 || *opcao > 55) && (*opcao != 'r')) {
-			system("cls");
-			MSG_MENU_ERRO
-			flag = 0;
-		} else {
-			flag = 1;
-		}
-	} while(!flag);
-}
-
-/*Objetivo: Apresentar e realizar a escolha do menu de relatórios do tipo 1
-Entrada: Ponteiro da opção escolhida.
-Saída: Nenhuma*/
-
-void apresentaEscolheMenuRelatorios1(char *opcao) {
-	int flag = 1;
-	
-	do {
-		cabecalho("Menu de Relatorio Tipo(1)");
-		OPCOES
-		printf("(1) - Dados gerais dos pilotos;\n");
-		printf("(2) - Dados gerais das equipes;\n");
-		printf("(3) - Dados gerais dos circuitos;\n");
-		printf("(4) - Dados gerais das voltas;\n");
-		printf("(R) - Retornar ao menu de relatorios.\n");
-		scanf(" %c", opcao);
-		*opcao = tolower(*opcao);
-		if ((*opcao < 49 || *opcao > 52) && (*opcao != 'r')) {
+		if ((*opcao < 49 || *opcao > 57) && (*opcao != 'r')) {
 			system("cls");
 			MSG_MENU_ERRO
 			flag = 0;
@@ -372,44 +348,34 @@ void chamaFuncoesMenuRelatorio(char *opcao) {
 	char opcaoDentroMenu = '\0';
 	switch(*opcao) {
 		case '1':
-			do {
-				system("cls");
-				apresentaEscolheMenuRelatorios1(&opcaoDentroMenu);
-				chamaFuncoesMenuRelatorios1(&opcaoDentroMenu);
-			} while(opcaoDentroMenu != 'r');
+			pesquisaDados();
 			break;
 		case '2':
+			pesquisaPilotos();
 			break;
 		case '3':
+			pesquisaCircuitos();
 			break;
 		case '4':
+			apresentaCircuitosCadastrados();
 			break;
 		case '5':
+			apresentaPilotosData();
 			break;
 		case '6':
+			apresentaDadosTempo();
 			break;
 		case '7':
+			apresentaDadosSem_melhorVolta();
 			break;
+		case '8':	
+			apresentaPilotosR8R9(0);
+			break;
+		case '9':
+			apresentaPilotosR8R9(1);	
 		default:
 			return;
 	}
 }
 
-/*Objetivo: Chamar as funções do menu de relatórios do tipo 1
-Entrada: Ponteiro da opção escolhida.
-Saída: Nenhuma.*/
 
-void chamaFuncoesMenuRelatorios1(char *opcao) {
-	switch(*opcao) {
-		case '1':
-			break;
-		case '2':
-			break;
-		case '3':
-			break;
-		case '4':
-			break;
-		default:
-			return;
-	}
-}

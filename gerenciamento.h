@@ -22,6 +22,16 @@
 #define ERRO_DB_PAIS_VAZIO printf("O Banco de Dados de Paises esta vazio.\nPortanto, preencha manualmente.\n");
 #define ERRO_CAD_PILOT printf("Piloto invalido! Este piloto ja esta cadastrado!\n");
 #define ERRO_CAD_EQUIP printf("Equipe Invalida! Esta equipe ja esta cadastrada!\n");
+#define ERRO_DB_EQUIPE_VAZIO printf("Arquivo ""equipes.dat"" vazio.");
+#define MIN_DIA 4
+#define MIN_MES 6
+#define MIN_ANO 2017
+
+typedef struct{
+	int dia;
+	int mes;
+	int ano;
+}data;
 
 typedef struct Tempo{
 	int minutos;
@@ -44,9 +54,11 @@ typedef struct Piloto{
 	int id;
 	char nome[TAM_NOME];
 	equipe equipePiloto;
-	char dataNascimento[TAM_DATA];
+	data dataNascimento;
 	char sexo;
 	pais paisPiloto;
+	int idade;
+	int qtdMelhoresVoltas;
 } piloto;
 
 typedef struct Circuito{
@@ -62,10 +74,14 @@ typedef struct Volta{
 	int piloto;
 	int circuito;
 	equipe equipePiloto;
-	char dataVolta[TAM_DATA];
+	data dataVolta;
 	tempo melhorVolta;
 } volta;
 
+void bubbleSortIdade(piloto *pilotos, int *qtdPilotos, char tipo);
+void bubbleSortQtdVoltas(piloto *pilotos, int *qtdPilotos, char tipo);
+void bubbleSortNome(piloto *pilotos, int *qtdPilotos, char tipo);
+int calculaIdade(data *dataNascimento);
 void geraNumerosPiloto(int *numeros, piloto *pPiloto, int *qtdPiloto);
 void inclusaoPilotos();
 void alterarPilotos();

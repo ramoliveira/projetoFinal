@@ -1,4 +1,4 @@
-/* Arquivo cabeçalho - Funções de Menu */
+//Arquivo cabeçalho das funções de menu
 
 #ifndef _MENU_h
 #define _MENU_h

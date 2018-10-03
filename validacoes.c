@@ -1,5 +1,4 @@
 /* Validações */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -11,6 +10,7 @@
 //Objetivo: Ler e validar valores reais
 //Parâmetros:  ponteiro de valores mínimos e máximos
 //Retorno: nenhum
+
 
 void leValidaFloat(float *pValor, float valorMin, float valorMax, char *texto) {
 	
@@ -37,6 +37,7 @@ void leValidaFloat(float *pValor, float valorMin, float valorMax, char *texto) {
 					
 		if(*pValor<valorMin || *pValor>valorMax){
 			printf("Valor Invalido - valor min %.2f e valor max %.2f\nDigite Novamente\n", valorMin,valorMax);
+			getch();system("cls");
 			flag=1;
 		}else{
 			flag=0;
@@ -44,12 +45,13 @@ void leValidaFloat(float *pValor, float valorMin, float valorMax, char *texto) {
 	}while(flag==1);
 }
 
-///Objetivo: Ler e validar nomes
+//Objetivo: Ler e validar nomes
 //Parâmetros:  ponteiro de nome e texto
 //Retorno: nenhum
 
 void leValidaNome(char *texto, char *nome) {
 	int flag = 1, qtdEspacos = 0, i;
+	int aux=0;
 	
 	do {
 		qtdEspacos = 0;
@@ -72,10 +74,19 @@ void leValidaNome(char *texto, char *nome) {
 			flag = 0;
 		} else {
 			for (i = 0; i < strlen(nome); i++) {
-				if (isdigit(nome[i]) != 0) {
-					printf("Nome invalido! Digite apenas letras.\n");
-					flag = 0;
-					break;
+				if (!isalpha(nome[i])) {
+					if(nome[i]==' '){
+						i++;
+						if(nome[i]==' '){
+							printf("Digite apenas um espaco entre os nomes.\n");
+							flag = 0;
+							break;
+						}
+					}else{
+						printf("Nome invalido! Digite apenas letras.\n");
+						flag = 0;
+						break;
+					}
 				} else {
 					flag = 1;
 				}
@@ -101,7 +112,7 @@ void leValidaChar(char *pChar, char X, char Y, char *titulo) {
 		*pChar = toupper(*pChar);
 		
 		if(*pChar != X && *pChar != Y){
-			printf("OpÃ§ao Invalida! Digite Novamente!\n");getch();system("cls");
+			printf("Opcao Invalida! Digite Novamente!\n");
 		}else{
 			flag=1;
 		}		
@@ -148,7 +159,7 @@ void leValidaInt(int *pValor,int valorMin, int valorMax, char *texto) {
 Parâmetros: ponteiro da data e texto
 Retorno: nenhum*/
 
-void leValidaData(char *data, char *texto) {
+void leValidaData(data *data, char *texto){
 	
 	struct tm *local;
 	time_t t;
@@ -159,11 +170,6 @@ void leValidaData(char *data, char *texto) {
 	int mesAtual = local->tm_mon+1;
 	int diaAtual = local->tm_mday;
 	
-	char data_aux[TAM_DATA], diaS[TAM_DATA], mesS[TAM_DATA], anoS[TAM_DATA];
-	strcpy(data_aux, "");
-	strcpy(diaS, "");
-	strcpy(mesS, "");
-	strcpy(anoS, "");
 	int i = 0, flag = 1, dia = 0, mes = 0, ano = 0;
 	
 	do {
@@ -206,17 +212,9 @@ void leValidaData(char *data, char *texto) {
 		}
 	} while(!flag);
 	
-	snprintf(diaS, TAM_DATA, "%d", dia);
-	snprintf(mesS, TAM_DATA, "%d", mes);
-	snprintf(anoS, TAM_DATA, "%d", ano);
-	
-	strcat(data_aux, diaS);
-	strcat(data_aux, "/");
-	strcat(data_aux, mesS);
-	strcat(data_aux, "/");
-	strcat(data_aux, anoS);
-	
-	strcpy(data,data_aux);
+	data->dia = dia;
+	data->mes = mes;
+	data->ano = ano;
 }
 
 /*Objetivo: Ler e validar siglas.
@@ -287,4 +285,59 @@ void leValidaTempo(int *minutos, int *segundos, float *milissegundos, char *text
 			flag = 1;
 		}
 	} while(!flag);
+}
+
+/*Objetivo: calcula quantidade de dias para aniversario
+Parâmetros: estrutura de data
+Retorno: quantidade de dias
+*/
+
+int qtdDiasAniversario(data *data){
+	
+	struct tm *local;
+	time_t t;
+	t = time(NULL);
+	local=localtime(&t);
+	
+	int mesAtual = local->tm_mon+1;
+	int diaAtual = local->tm_mday;	
+	int anoAtual = local->tm_year+1900;
+	
+    if (((anoAtual%4)==0) && ( ((anoAtual%100)!=0) || ((anoAtual%400)==0)) && mesAtual >= 2){
+	    diaAtual +=1;
+   	}
+ 
+	if(mesAtual > data->mes){
+		return -1;
+	}else if(data->mes == mesAtual && data->dia < diaAtual){
+		return -1;
+	}else if(data->mes == mesAtual && data->dia == diaAtual){
+		return 0;
+	}else{
+		return (data->dia - diaAtual) + (( mesAtual - data->mes) * 30);
+	}
+}  
+
+/*Objetivo: verifica dia da semana
+Parâmetros: estrutura de data
+Retorno: dia da semana número inteiro
+*/
+
+int calculaDiaSemana(data *dataVolta){
+	
+	struct tm *dateSystem;
+	time_t dataAtual;
+	
+	
+	time(&dataAtual);
+	dateSystem = localtime(&dataAtual);
+	
+	dateSystem->tm_year = dataVolta->ano - 1900;
+	dateSystem->tm_mon = dataVolta->mes - 1;
+	dateSystem->tm_mday = dataVolta->dia;
+ 	mktime(dateSystem); 
+	
+	return dateSystem->tm_wday; //0 - Domingo ... 6 - Segunda
+	
+	
 }

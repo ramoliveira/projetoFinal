@@ -1,17 +1,17 @@
-# Project: ProjetoFinal
+# Project: ProjetoFinalLucas
 # Makefile created by Dev-C++ 5.11
 
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o menu.o ui.o storage.o gerenciamento.o validacoes.o
-LINKOBJ  = main.o menu.o ui.o storage.o gerenciamento.o validacoes.o
-LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
-INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
-CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
-BIN      = ProjetoFinal.exe
-CXXFLAGS = $(CXXINCS) -O0
-CFLAGS   = $(INCS) -O0
+OBJ      = main.o gerenciamento.o menu.o storage.o ui.o validacoes.o relatorios.o
+LINKOBJ  = main.o gerenciamento.o menu.o storage.o ui.o validacoes.o relatorios.o
+LIBS     = -L"C:/Program Files/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -m32
+INCS     = -I"C:/Program Files/Dev-Cpp/MinGW64/include" -I"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"C:/Program Files/Dev-Cpp/MinGW64/include" -I"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+BIN      = ProjetoFinalLucas.exe
+CXXFLAGS = $(CXXINCS) -m32
+CFLAGS   = $(INCS) -m32
 RM       = rm.exe -f
 
 .PHONY: all all-before all-after clean clean-custom
@@ -27,17 +27,20 @@ $(BIN): $(OBJ)
 main.o: main.c
 	$(CC) -c main.c -o main.o $(CFLAGS)
 
+gerenciamento.o: gerenciamento.c
+	$(CC) -c gerenciamento.c -o gerenciamento.o $(CFLAGS)
+
 menu.o: menu.c
 	$(CC) -c menu.c -o menu.o $(CFLAGS)
-
-ui.o: ui.c
-	$(CC) -c ui.c -o ui.o $(CFLAGS)
 
 storage.o: storage.c
 	$(CC) -c storage.c -o storage.o $(CFLAGS)
 
-gerenciamento.o: gerenciamento.c
-	$(CC) -c gerenciamento.c -o gerenciamento.o $(CFLAGS)
+ui.o: ui.c
+	$(CC) -c ui.c -o ui.o $(CFLAGS)
 
 validacoes.o: validacoes.c
 	$(CC) -c validacoes.c -o validacoes.o $(CFLAGS)
+
+relatorios.o: relatorios.c
+	$(CC) -c relatorios.c -o relatorios.o $(CFLAGS)
